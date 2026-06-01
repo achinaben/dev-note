@@ -1,3 +1,4 @@
+
 -- 网关 JWT 校验：lua-resty-openidc 直连 JWKS 验 RS256，再校验 exp/iss/scope。
 local _M = {}
 
@@ -30,6 +31,7 @@ local function openidc_opts()
         timeout = tonumber(getenv("SCM_JWT_TIMEOUT_MS", "2000")),
         jwk_expires_in = tonumber(getenv("SCM_JWT_JWKS_CACHE_SECONDS", "3600")),
         ssl_verify = getenv("SCM_JWT_SSL_VERIFY", "no")
+
     }
 end
 
@@ -73,22 +75,27 @@ local function scope_ok(payload, required)
     return false
 end
 
+
 local function json_error(status, code, message)
     ngx.status = status
     ngx.header["Content-Type"] = "application/json"
     ngx.say('{"code":"' .. code .. '","message":"' .. message .. '"}')
     return ngx.exit(status)
+
 end
 
 function _M.validate(required_scope, require_bearer)
     local auth = ngx.var.http_authorization
     if require_bearer and (not auth or auth == "") then
+
         return json_error(401, "GATEWAY_401", "missing_bearer")
+
     end
     if not auth or auth == "" then
         return true
     end
     if not auth:match("^[Bb]earer%s+.+$") then
+
         return json_error(401, "GATEWAY_401", "invalid Authorization")
     end
     local openidc = require "resty.openidc"
@@ -103,6 +110,7 @@ function _M.validate(required_scope, require_bearer)
     end
     if payload.iss and payload.iss ~= issuer() then
         return json_error(401, "GATEWAY_401", "bad_issuer")
+
     end
     if not scope_ok(payload, required_scope) then
         return json_error(403, "GATEWAY_403", "insufficient_scope")

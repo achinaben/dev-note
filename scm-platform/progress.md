@@ -7,9 +7,11 @@
 | 项 | 值 |
 |----|-----|
 | 目标波次 | W37 |
+
 | 上次更新 | 2026-06-01 19:04 UTC |
 | 上次 mvn test | `mvn test` 失败于 TMS WireMock/Jetty；`mvn -pl scm-contract-check -am test` 通过 |
 | 阻塞项 | 全量测试在 TMS WireMock/Jetty 依赖冲突处失败；本轮 OpenResty 契约测试不受影响 |
+
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
 ## W37 清单
@@ -47,6 +49,7 @@
 
 - 新增 docker-compose.kafka-overlay.yml、application-docker-kafka（三服务）
 - mvn test：未全量跑（本机 JDK25 WireMock）
+
 
 ### 2026-06-01 Agent（OpenResty direct JWKS）
 
