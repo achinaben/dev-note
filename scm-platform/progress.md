@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 22:34 UTC |
+| 上次更新 | 2026-06-01 22:40 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | edge + Kafka CI 最新失败停在 TMS 容器提前退出；已降低服务镜像 JVM 内存，等待新 CI 验证 |
+| 阻塞项 | edge + Kafka CI 最新失败仍停在 TMS 端口等待；已补 JDBC 存储自动配置导入，等待新 CI 验证 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -146,3 +146,12 @@
 - 契约：Edge Kafka 栈配置测试补充服务镜像低内存 JVM 断言，防止回退到高堆设置。
 - 测试：JDK 17 下 `mvn -pl scm-contract-check test` 通过；`mvn test` 全模块通过。当前云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
 - 下一动作：观察新触发的 edge + Kafka CI 是否越过 TMS 端口等待；若仍失败，继续按单服务日志修复 TMS 启动问题。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 TMS JDBC 自动配置修复）
+
+- 已在仓库根同步 `cursor/scm-wave`；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- 观察：不使用 `gh`，通过 GitHub REST 读取最新 edge + Kafka workflow；上一 run 仍失败在 “Wait for TMS port”，当前修复提交已触发新 run 且仍在进行中。
+- 修复：公共 Spring Boot 自动配置导入补上 JDBC 存储配置，使 Docker/JDBC profile 下的 TMS/ERP/OMS/WMS 能创建 DataSource、JdbcTemplate 与 Flyway，避免服务因 JDBC 仓储依赖缺失启动退出。
+- 契约：Edge Kafka 栈配置测试新增公共自动配置导入断言，防止再次漏掉 JDBC 存储配置。
+- 测试：JDK 17 下 `mvn -pl scm-contract-check test` 通过；`mvn test` 全模块通过。当前云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
+- 下一动作：观察新触发的 edge + Kafka CI 是否越过 TMS 端口等待并进入 ERP/OMS/WMS 与 E2E-K05；若仍失败，继续按 CI 步骤状态和可用日志修复。
