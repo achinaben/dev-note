@@ -44,10 +44,13 @@ jobs:
       - name: Build SCM service images
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml build scm-erp scm-oms scm-wms scm-tms scm-mock-pay scm-mock-carrier scm-mock-inventory
 
-      - name: Start edge + Kafka stack
+      - name: Start edge + Kafka infrastructure
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d mysql-erp mysql-oms mysql-wms mysql-tms redis kafka keycloak
+
+      - name: Start edge + Kafka services
         run: |
           chmod +x scripts/*.sh
-          SCM_COMPOSE_SKIP_BUILD=1 bash scripts/start-edge-kafka.sh
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-erp scm-tms scm-oms scm-wms scm-mock-pay scm-mock-carrier scm-mock-inventory scm-gateway-jwt
 
       - name: Wait for edge + Kafka ports
         run: |
