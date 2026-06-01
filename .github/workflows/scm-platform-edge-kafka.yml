@@ -61,18 +61,36 @@ jobs:
       - name: Start Keycloak infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d keycloak
 
-      - name: Start ERP and TMS services
-        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-erp scm-tms
+      - name: Start TMS service
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-tms
 
-      - name: Wait for ERP and TMS ports
+      - name: Wait for TMS port
         run: |
-          for _ in $(seq 1 80); do
-            curl -s --connect-timeout 2 http://127.0.0.1:8083/ >/dev/null && \
-            curl -s --connect-timeout 2 http://127.0.0.1:8084/ >/dev/null && exit 0
+          for _ in $(seq 1 120); do
+            curl -s --connect-timeout 2 http://127.0.0.1:8083/ >/dev/null && exit 0
+            if [ -n "$(docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps -q --status exited scm-tms)" ]; then
+              break
+            fi
             sleep 3
           done
-          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps scm-erp scm-tms
-          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 scm-erp scm-tms
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps scm-tms
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 scm-tms
+          exit 1
+
+      - name: Start ERP service
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-erp
+
+      - name: Wait for ERP port
+        run: |
+          for _ in $(seq 1 120); do
+            curl -s --connect-timeout 2 http://127.0.0.1:8084/ >/dev/null && exit 0
+            if [ -n "$(docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps -q --status exited scm-erp)" ]; then
+              break
+            fi
+            sleep 3
+          done
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps scm-erp
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 scm-erp
           exit 1
 
       - name: Start OMS and WMS services
