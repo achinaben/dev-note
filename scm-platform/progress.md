@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 22:26 UTC |
+| 上次更新 | 2026-06-01 22:34 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | edge + Kafka CI 已拆分 TMS/ERP 启动等待并推送，等待新 CI 继续验证 |
+| 阻塞项 | edge + Kafka CI 最新失败停在 TMS 容器提前退出；已降低服务镜像 JVM 内存，等待新 CI 验证 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -137,3 +137,12 @@
 - 契约：Edge Kafka 栈配置测试锁定新的分段等待与退出诊断，防止回退到合并等待。
 - 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
 - 下一动作：观察新触发的 edge + Kafka CI 是否越过 TMS/ERP 等待；若仍失败，按单服务日志继续修复。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 TMS 内存修复）
+
+- 已在仓库根同步 `cursor/scm-wave`；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- 观察：不使用 `gh`，通过 GitHub REST 读取最新 edge + Kafka workflow；最新 run 失败在 “Wait for TMS port”，且 TMS 容器应为提前退出，尚未进入 ERP/OMS/WMS 与 E2E-K05。
+- 修复：服务 Docker 镜像默认 JVM 从 `-Xmx384m` 收敛为 `-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m`，降低 MySQL、Kafka、Keycloak 与多 Spring 服务同跑时的 CI 内存压力。
+- 契约：Edge Kafka 栈配置测试补充服务镜像低内存 JVM 断言，防止回退到高堆设置。
+- 测试：JDK 17 下 `mvn -pl scm-contract-check test` 通过；`mvn test` 全模块通过。当前云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
+- 下一动作：观察新触发的 edge + Kafka CI 是否越过 TMS 端口等待；若仍失败，继续按单服务日志修复 TMS 启动问题。
