@@ -59,7 +59,8 @@ public class FulfillmentService {
         String p2 = "P" + orderNo + "-2";
         createPackageIfAbsent(order, p1);
         createPackageIfAbsent(order, p2);
-        if (order.getStatus().rank() < OrderStatus.FULFILLING.rank()) {
+        if (order.getStatus().rank() >= OrderStatus.PAID.rank()
+                && order.getStatus().rank() < OrderStatus.FULFILLING.rank()) {
             order.setStatus(stateMachine.apply(order.getStatus(), OrderStatus.FULFILLING));
             orderRepository.update(order);
         }
