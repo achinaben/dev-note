@@ -22,6 +22,7 @@ class EdgeKafkaStackConfigTest {
         String rootWorkflow = read(root.getParent(), ".github/workflows/scm-platform-edge-kafka.yml");
         String kafkaOverlay = read(root, "docker-compose.kafka-overlay.yml");
         String compose = read(root, "docker-compose.yml");
+        String serviceDockerfile = read(root, "deploy/Dockerfile.service");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
@@ -35,6 +36,7 @@ class EdgeKafkaStackConfigTest {
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
+        assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
 
         assertTrue(workflow.contains("e2e-edge-kafka-stack:"));
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
@@ -72,6 +74,11 @@ class EdgeKafkaStackConfigTest {
     private static void assertEdgeStackAcceptsHostIssuedKeycloakTokens(String edgeCompose) {
         assertTrue(edgeCompose.contains("SCM_JWT_ISSUER: http://localhost:8180/realms/scm"));
         assertTrue(edgeCompose.contains("SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs"));
+    }
+
+    private static void assertServiceImagesUseCiFriendlyJvmDefaults(String serviceDockerfile) {
+        assertTrue(serviceDockerfile.contains("ENV JAVA_OPTS=\"-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m\""));
+        assertFalse(serviceDockerfile.contains("-Xmx384m"));
     }
 
     private static void assertRootWorkflowTriggersScmWaveAndRunsK05(String rootWorkflow) {
