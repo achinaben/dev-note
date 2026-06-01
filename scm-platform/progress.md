@@ -8,7 +8,7 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 20:59 UTC |
+| 上次更新 | 2026-06-01 21:00 UTC |
 | 上次 mvn test | `mvn test` 通过 |
 | 阻塞项 | 无 |
 
@@ -97,3 +97,9 @@
 - 契约：Edge Kafka 栈配置测试补充 issuer/JWKS 分工与 K05 脚本认证开关断言。
 - 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI（`docker: command not found`），compose 实跑仍需 GitHub CI job 验证。
 - 下一动作：观察 `e2e-edge-kafka-stack` CI；若通过则勾选 W37 E2E-K05，否则继续按 CI 日志修复。
+
+### 2026-06-01 Cloud Automation Run（提交提醒处理）
+
+- 已确认远程 `cursor/scm-wave` 包含 edge + Kafka E2E-K05 的 JWT token 修复提交，本地重复提交已清理并与远程对齐。
+- 保留远程实现：edge 栈使用宿主机可见 issuer、容器内 JWKS；K05 脚本启用 `SCM_E2E_OMS_AUTH`，E2E 通过 Keycloak token 访问开启 JWT 的 OMS。
+- 本轮仅提交进度记录；下一动作仍是观察 `e2e-edge-kafka-stack` CI 结果，若失败继续修复。
