@@ -5,8 +5,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 COMPOSE="docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml"
 if [ "${SCM_COMPOSE_SKIP_BUILD:-0}" = "1" ]; then
-  echo "$COMPOSE up -d ..."
-  $COMPOSE up -d
+  echo "$COMPOSE up -d --no-build ..."
+  $COMPOSE up -d --no-build
 else
   echo "$COMPOSE up -d --build ..."
   $COMPOSE up -d --build

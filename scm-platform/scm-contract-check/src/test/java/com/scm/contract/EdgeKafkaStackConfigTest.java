@@ -31,6 +31,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(runScript.contains("@E2E-K05"));
         assertTrue(runScript.contains("SCM_E2E_OMS_AUTH"));
         assertTrue(startScript.contains("SCM_COMPOSE_SKIP_BUILD"));
+        assertTrue(startScript.contains("--no-build"));
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
