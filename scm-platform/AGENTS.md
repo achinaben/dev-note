@@ -29,8 +29,8 @@ bash scripts/sync-openapi-contracts.sh && mvn -pl scm-contract-check test
 
 ## 网关 JWT（OpenResty）
 
-- `deploy/openresty/jwt-auth.lua` — exp / iss / scope（含 Keycloak realm roles）
-- `auth_request` → OMS `GET /internal/v1/jwt/check`（**RS256**，需 OMS `jwt,jwt-jwks`）
+- `deploy/openresty/jwt-auth.lua` — lua-resty-openidc 直连 JWKS 验 RS256，并校验 exp / iss / scope（含 Keycloak realm roles）
+- OpenResty 环境变量：`SCM_JWT_ISSUER`、`SCM_JWT_JWKS_URI`
 - 建单路由 **必须** 带 Bearer（`require_bearer`）
 - E2E-GW03：错误 scope → 403；E2E-GW04：无 Bearer → 401
 
@@ -39,7 +39,7 @@ bash scripts/sync-openapi-contracts.sh && mvn -pl scm-contract-check test
 | 组合 | 内容 |
 |------|------|
 | `docker-compose.full.yml` | MySQL + 四服务 + mock-pay/carrier/inventory |
-| `docker-compose.edge.yml` | + Keycloak + OpenResty :8089 + OMS jwt-jwks |
+| `docker-compose.edge.yml` | + Keycloak + OpenResty :8089 直连 JWKS |
 
 CI：`docker-stack-smoke`、`e2e-stack-smoke`（`@smoke and @e2e`）。
 
@@ -61,6 +61,5 @@ mvn -pl scm-integration-tests -Pe2e-kafka test
 
 ## 下一步（W37）
 
-1. OpenResty 内嵌 lua-resty-openidc 直连 JWKS
-2. 全栈 E2E-06（售后拦截）
-3. edge + kafka 一键脚本与 CI job
+1. 全栈 E2E-06（售后拦截）
+2. edge + kafka 一键脚本与 CI job

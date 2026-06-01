@@ -1,4 +1,4 @@
-# 边缘栈：Keycloak + OpenResty JWT(RS256 via OMS) + 全栈四服务（与 full 联用）
+# 边缘栈：Keycloak + OpenResty JWT(RS256 direct JWKS) + 全栈四服务（与 full 联用）
 # docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml up -d --build
 services:
   keycloak:
@@ -23,6 +23,7 @@ services:
     ports: ["8089:8080"]
     environment:
       SCM_JWT_ISSUER: http://keycloak:8080/realms/scm
+      SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs
     depends_on:
       scm-oms:
         condition: service_healthy
