@@ -52,17 +52,17 @@ class EdgeKafkaStackConfigTest {
     }
 
     private static void assertKafkaHasInternalAndExternalListeners(String compose) {
+        assertTrue(compose.contains("confluentinc/cp-kafka:7.5.0"));
         assertTrue(compose.contains("9092:29092"));
         assertTrue(compose.contains("PLAINTEXT://kafka:9092"));
         assertTrue(compose.contains("EXTERNAL://localhost:9092"));
-        assertTrue(compose.contains("KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
-        assertTrue(compose.contains("KAFKA_ENABLE_KRAFT"));
-        assertTrue(compose.contains("KAFKA_CFG_BROKER_ID"));
-        assertTrue(compose.contains("KAFKA_KRAFT_CLUSTER_ID"));
-        assertTrue(compose.contains("KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR"));
-        assertTrue(compose.contains("KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR"));
-        assertTrue(compose.contains("KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR"));
-        assertTrue(compose.contains("ALLOW_PLAINTEXT_LISTENER"));
+        assertTrue(compose.contains("CLUSTER_ID"));
+        assertTrue(compose.contains("KAFKA_PROCESS_ROLES"));
+        assertTrue(compose.contains("KAFKA_CONTROLLER_QUORUM_VOTERS"));
+        assertTrue(compose.contains("KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
+        assertTrue(compose.contains("KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR"));
+        assertTrue(compose.contains("KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR"));
+        assertTrue(compose.contains("KAFKA_TRANSACTION_STATE_LOG_MIN_ISR"));
     }
 
     private static void assertKafkaOverlayDoesNotUseEmptyProfiles(String kafkaOverlay) {
