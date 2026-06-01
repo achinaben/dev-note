@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 22:16 UTC |
+| 上次更新 | 2026-06-01 22:18 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | edge + Kafka CI 已修复根路径 404 探活误判，等待推送后 CI 继续验证 |
+| 阻塞项 | edge + Kafka CI 探活误判已修复并本机验证通过，等待推送后 CI 继续验证 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -121,3 +121,10 @@
 - 契约：Edge Kafka 栈配置测试锁定新的探活命令，并禁止回退到 `curl -sf http://127.0.0.1:808...`。
 - 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
 - 下一动作：观察 `e2e-edge-kafka-stack` CI 是否越过 ERP/TMS 与 OMS/WMS 等待并执行 E2E-K05；若仍失败，按新增日志继续修复。
+
+### 2026-06-01 Cloud Automation Run（远程探活修复确认）
+
+- 已在仓库根同步 `cursor/scm-wave`；本轮本地尝试了同类探活修复，推送前 rebase 发现远程已包含修复提交，已放弃本地重复提交并回到远程最新。
+- 确认：远程实现已去掉 ERP/TMS、OMS/WMS 阶段的 `curl -f` 2xx 要求，并保留等待失败时的容器状态与日志输出。
+- 测试：使用 JDK 17 执行 `mvn test`，全模块通过；测试生成的 target 产物已清理。
+- 下一动作：继续观察推送后的 `e2e-edge-kafka-stack` CI；若仍失败，按新增日志定位下一处 compose/E2E-K05 问题。
