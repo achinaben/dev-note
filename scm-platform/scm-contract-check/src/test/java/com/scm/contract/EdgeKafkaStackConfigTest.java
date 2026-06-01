@@ -23,6 +23,8 @@ class EdgeKafkaStackConfigTest {
         String kafkaOverlay = read(root, "docker-compose.kafka-overlay.yml");
         String compose = read(root, "docker-compose.yml");
         String serviceDockerfile = read(root, "deploy/Dockerfile.service");
+        String commonSpringImports = read(root,
+                "scm-common-spring/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
@@ -37,6 +39,7 @@ class EdgeKafkaStackConfigTest {
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
         assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
+        assertJdbcStorageIsAutoConfigured(commonSpringImports);
 
         assertTrue(workflow.contains("e2e-edge-kafka-stack:"));
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
@@ -79,6 +82,10 @@ class EdgeKafkaStackConfigTest {
     private static void assertServiceImagesUseCiFriendlyJvmDefaults(String serviceDockerfile) {
         assertTrue(serviceDockerfile.contains("ENV JAVA_OPTS=\"-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m\""));
         assertFalse(serviceDockerfile.contains("-Xmx384m"));
+    }
+
+    private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports) {
+        assertTrue(commonSpringImports.contains("com.scm.spring.storage.EnableJdbcStorageConfiguration"));
     }
 
     private static void assertRootWorkflowTriggersScmWaveAndRunsK05(String rootWorkflow) {

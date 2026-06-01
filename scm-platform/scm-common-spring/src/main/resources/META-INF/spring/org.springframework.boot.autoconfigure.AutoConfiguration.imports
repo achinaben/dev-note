@@ -1,4 +1,5 @@
 com.scm.spring.event.ScmEventAutoConfiguration
+com.scm.spring.storage.EnableJdbcStorageConfiguration
 com.scm.spring.ops.OpsWebMvcConfiguration
 com.scm.spring.security.IntegrationWebMvcConfiguration
 com.scm.spring.security.jwt.JwtWebMvcConfiguration
