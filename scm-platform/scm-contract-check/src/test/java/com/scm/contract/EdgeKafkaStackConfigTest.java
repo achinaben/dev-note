@@ -56,6 +56,8 @@ class EdgeKafkaStackConfigTest {
         assertTrue(compose.contains("PLAINTEXT://kafka:9092"));
         assertTrue(compose.contains("EXTERNAL://localhost:9092"));
         assertTrue(compose.contains("KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
+        assertTrue(compose.contains("KAFKA_KRAFT_CLUSTER_ID"));
+        assertTrue(compose.contains("ALLOW_PLAINTEXT_LISTENER"));
     }
 
     private static void assertKafkaOverlayDoesNotUseEmptyProfiles(String kafkaOverlay) {
