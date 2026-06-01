@@ -8,13 +8,13 @@
 |----|-----|
 | 目标波次 | W37 |
 | 上次更新 | 2026-06-01 |
-| 上次 mvn test | scm-oms-service / scm-contract-check 局部通过 |
-| 阻塞项 | 无（JDK25 WireMock / 本机 Docker 仅影响部分联调，不阻断 W37 代码与 CI） |
+| 上次 mvn test | scm-contract-check 局部通过（11 tests） |
+| 阻塞项 | 无；当前云端无 docker 命令，仅影响本机镜像构建验证 |
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
 ## W37 清单
 
-- [ ] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
+- [x] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
 - [ ] 全栈 E2E-06（售后拦截）
 - [x] Kafka profile 纳入 compose（docker-compose.kafka-overlay.yml + application-docker-kafka）
 - [ ] E2E-K05 在 compose 栈上 CI 跑通
@@ -47,3 +47,10 @@
 
 - 新增 docker-compose.kafka-overlay.yml、application-docker-kafka（三服务）
 - mvn test：未全量跑（本机 JDK25 WireMock）
+
+### 2026-06-01 Agent W37（OpenResty direct JWKS）
+
+- 完成：OpenResty 安装 lua-resty-openidc，网关通过 JWKS 直校 RS256 Bearer，不再转发 OMS auth_request。
+- 配置：边缘栈与本地网关传入 JWKS 地址；保留 scope 与 realm roles 校验。
+- 测试：`mvn -pl scm-contract-check test` 通过，11 tests。
+- 说明：云端无 docker 命令，OpenResty 镜像构建未在本机验证；下次继续 W37 全栈 E2E-06（售后拦截）。
