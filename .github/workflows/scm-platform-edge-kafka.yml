@@ -79,7 +79,7 @@ jobs:
               --connect-timeout 2 --max-time 5 \
               -X POST http://127.0.0.1:8180/realms/scm/protocol/openid-connect/token \
               -H "Content-Type: application/x-www-form-urlencoded" \
-              --data "grant_type=password&client_id=scm-gateway&username=e2e-user&password=e2e-pass&scope=openid%20oms.write" || true)
+              --data "grant_type=password&client_id=scm-gateway&username=e2e-user&password=e2e-pass&scope=openid" || true)
             if [ "$http_code" = "200" ]; then
               exit 0
             fi

@@ -633,7 +633,7 @@ public class E2EStepDefinitions {
                         .formParam("client_id", "scm-gateway")
                         .formParam("username", "e2e-user")
                         .formParam("password", "e2e-pass")
-                        .formParam("scope", "openid oms.write")
+                        .formParam("scope", "openid")
                         .post("/realms/scm/protocol/openid-connect/token")
                         .then().extract().path("access_token");
                 if (token != null && !token.isBlank()) {

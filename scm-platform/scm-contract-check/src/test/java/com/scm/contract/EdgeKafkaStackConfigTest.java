@@ -137,6 +137,8 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("Wait for Keycloak token endpoint"));
         assertTrue(rootWorkflow.contains("/realms/scm/protocol/openid-connect/token"));
         assertTrue(rootWorkflow.contains("grant_type=password&client_id=scm-gateway"));
+        assertTrue(rootWorkflow.contains("scope=openid"));
+        assertFalse(rootWorkflow.contains("scope=openid%20oms.write"));
         assertTrue(rootWorkflow.contains("Start TMS service"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-tms"));
         assertTrue(rootWorkflow.contains("Wait for TMS port"));

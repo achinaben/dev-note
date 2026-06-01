@@ -19,7 +19,7 @@ curl -s -X POST "http://localhost:8180/realms/scm/protocol/openid-connect/token"
   -d "client_id=scm-gateway" \
   -d "username=e2e-user" \
   -d "password=e2e-pass" \
-  -d "scope=openid oms.write"
+  -d "scope=openid"
 ```
 
 响应中的 `access_token` 用于调用网关或 OMS。

@@ -303,7 +303,7 @@ jobs:
             if curl -sf -X POST "http://localhost:8180/realms/scm/protocol/openid-connect/token" \
               -d "grant_type=password" -d "client_id=scm-gateway" \
               -d "username=e2e-user" -d "password=e2e-pass" \
-              -d "scope=openid oms.write" | grep -q access_token; then
+              -d "scope=openid" | grep -q access_token; then
               echo "Keycloak token OK"
               exit 0
             fi
