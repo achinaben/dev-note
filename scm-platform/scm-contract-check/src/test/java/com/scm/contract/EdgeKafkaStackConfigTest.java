@@ -89,6 +89,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("up -d mysql-erp mysql-oms mysql-wms mysql-tms redis"));
         assertTrue(rootWorkflow.contains("Start Kafka infrastructure"));
         assertTrue(rootWorkflow.contains("up -d kafka"));
+        assertTrue(rootWorkflow.contains("Wait for Kafka port"));
         assertTrue(rootWorkflow.contains("Start Keycloak infrastructure"));
         assertTrue(rootWorkflow.contains("up -d keycloak"));
         assertTrue(rootWorkflow.contains("Start ERP and TMS services"));

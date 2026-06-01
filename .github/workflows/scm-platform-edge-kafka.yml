@@ -50,6 +50,14 @@ jobs:
       - name: Start Kafka infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d kafka
 
+      - name: Wait for Kafka port
+        run: |
+          for _ in $(seq 1 80); do
+            (echo >"/dev/tcp/127.0.0.1/9092") >/dev/null 2>&1 && exit 0
+            sleep 3
+          done
+          exit 1
+
       - name: Start Keycloak infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d keycloak
 
