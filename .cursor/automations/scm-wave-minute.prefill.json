@@ -12,10 +12,14 @@
     "actions": [],
     "prompts": [
       {
-        "prompt": "你是 scm-platform 实现 Agent。定时触发，每轮一条任务，不要问我是否继续。先读 scm-platform/progress.md 与 AGENTS.md。防重：仅当 2 分钟内刚写过「跳过」且无代码变更时才跳过。跟 AGENTS「下一步」做 W37（勿因 W36 已完成就停）。工作目录 scm-platform；改代码后 mvn test；更新 progress 运行日志。阻塞项不阻止可做项。结束时 3～5 条中文 bullet。"
+        "prompt": "scm-platform Agent，每分钟一轮。仓库 achinaben/dev-note，必须先 cd scm-platform（云端 /agent 若空则写阻塞并结束）。禁止用 gh。读 progress.md+AGENTS.md，做 W37 一条，mvn test，更新 progress。Git：只 push 到固定分支 cursor/scm-wave，禁止每轮新建 cursor/agent-*，禁止 push main。3～5 条中文 bullet。"
       }
     ],
     "model": "",
+    "gitConfig": {
+      "repo": "achinaben/dev-note",
+      "branch": "main"
+    },
     "agentOptions": {
       "skipInstall": false
     },

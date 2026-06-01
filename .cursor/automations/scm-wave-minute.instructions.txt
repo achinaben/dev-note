@@ -1,23 +1,25 @@
-你是 scm-platform 实现 Agent。本 Automation **每分钟**触发一次（cron: * * * * *），每次只执行一轮，不要问我是否继续。
+你是 scm-platform 实现 Agent。本 Automation 每分钟触发，每轮一条任务，不要问我是否继续。
 
-## 防重 / 空转（必须先做）
-0. 读 scm-platform/progress.md 与 scm-platform/AGENTS.md。
-   - 若「运行日志」最后一条在 **2 分钟内**，且内容仅为「跳过」、本轮无任何代码/配置变更：写一行「跳过：距上轮过近」后结束。
-   - **不要**因 W36 已完成就停止；应执行 AGENTS.md「下一步」中的 **当前波次（如 W37）**。
-   - 「阻塞项」仅记录环境限制；**不要**因 JDK25/本机 Docker 未测而整轮空转——改做不依赖该环境的项（单测、文档、CI、compose 配置）。
+## 云端工作区（必须先做，解决 /agent 空目录）
+0. 本任务绑定 GitHub 仓库 **achinaben/dev-note**（整仓），代码在子目录 **scm-platform/**。
+1. 启动后立刻执行：`pwd && ls -la`；若当前目录为空或没有 scm-platform，说明未检出仓库——只写 progress 阻塞项「云端未检出 dev-note」后结束，不要用 gh 命令。
+2. 进入工作目录：`cd scm-platform`（若不存在则 `find / -maxdepth 4 -type d -name scm-platform 2>/dev/null | head -1` 再 cd）。
+3. **禁止依赖** `gh` CLI；不要执行 gh auth / gh repo view。
 
-## 启动
-1. 以 AGENTS.md「下一步」为任务源；progress.md 中对应波次清单第一项未勾选项为准。
-2. 工作目录：scm-platform（Java 17；Windows 设 JAVA_HOME 到 IDEA JBR）。
+## 防重 / 空转
+4. 读 **scm-platform/progress.md** 与 **scm-platform/AGENTS.md**（路径相对仓库根：先 cd scm-platform 再读 progress.md、AGENTS.md）。
+5. 若运行日志最后一条在 2 分钟内且仅为「跳过」、本轮无变更：追加「跳过：距上轮过近」后结束。
+6. 跟 AGENTS.md「下一步」做 W37；勿因 W36 已完成就停。
 
 ## 执行
-3. 本轮只做 **一条** 未完成项；禁止改 业务方案/ai-dev/contracts 字段。
-4. 改代码后执行 `mvn test`（可 `-pl` 单模块避免 OOM）；未全绿则修或写清阻塞项。
-5. 在 progress「运行日志」追加：时间、做了什么、测试结果。
+7. 本轮只做一条未完成项；禁止改 业务方案/ai-dev/contracts 字段。
+8. 在 scm-platform 目录执行 `mvn test`（可 `-pl` 单模块）；未全绿则修或写阻塞项。
+9. 更新 scm-platform/progress.md 运行日志；commit 后 push（见下方 Git 节）。
 
-## 波次完成
-6. 当前波次清单全勾后：更新 AGENTS.md（标完成 + 写出下一波 3 条以内「下一步」），progress「目标波次」+1。
+## Git（固定工作分支，与个人分支模型一致）
+- 工作分支：cursor/scm-wave（全波次共用；已在该分支则不要 checkout -b 新分支）。
+- 每轮成功：git add → commit → git push origin cursor/scm-wave；推送前可 git pull --rebase origin cursor/scm-wave。
+- 禁止创建 cursor/agent-* 或任何新的随机 agent 分支；禁止 push 到 main；禁止自行 merge 到 main。
 
-## 停止条件
-7. 仅当：需用户二选一决策、或本轮已做完一条且有明确下一条说明，才结束。
-8. 结束时中文 3～5 条 bullet：完成项/跳过原因、测试情况、下次从哪项继续。
+## 结束
+10. 中文 3～5 条 bullet：完成项/跳过原因、测试情况、下次从哪项继续。

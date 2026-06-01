@@ -47,3 +47,9 @@
 
 - 新增 docker-compose.kafka-overlay.yml、application-docker-kafka（三服务）
 - mvn test：未全量跑（本机 JDK25 WireMock）
+
+### 2026-06-01 Cloud Automation Run（失败）
+
+- 触发成功，但云端 /agent 工作区空，未检出 dev-note，找不到 scm-platform
+- 阻塞：Automation 需绑定 repo achinaben/dev-note + 指令先 cd scm-platform
+- 已更新 scm-wave-minute.instructions.txt 与 prefill gitConfig
