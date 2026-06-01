@@ -125,6 +125,9 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("build scm-gateway-jwt"));
         assertTrue(rootWorkflow.contains("Build SCM service images"));
         assertTrue(rootWorkflow.contains("Start MySQL and Redis infrastructure"));
+        assertTrue(rootWorkflow.contains("MySQL/Redis infrastructure start failed"));
+        assertTrue(rootWorkflow.contains("logs --tail=120 mysql-erp mysql-oms mysql-wms mysql-tms redis"));
+        assertTrue(rootWorkflow.contains("down -v --remove-orphans"));
         assertTrue(rootWorkflow.contains("up -d mysql-erp mysql-oms mysql-wms mysql-tms redis"));
         assertTrue(rootWorkflow.contains("Start Kafka infrastructure"));
         assertTrue(rootWorkflow.contains("up -d kafka"));

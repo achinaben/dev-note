@@ -45,7 +45,18 @@ jobs:
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml build scm-erp scm-oms scm-wms scm-tms scm-mock-pay scm-mock-carrier scm-mock-inventory
 
       - name: Start MySQL and Redis infrastructure
-        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d mysql-erp mysql-oms mysql-wms mysql-tms redis
+        run: |
+          for attempt in 1 2; do
+            if docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d mysql-erp mysql-oms mysql-wms mysql-tms redis; then
+              exit 0
+            fi
+            echo "MySQL/Redis infrastructure start failed (attempt ${attempt})" >&2
+            docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps mysql-erp mysql-oms mysql-wms mysql-tms redis || true
+            docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=120 mysql-erp mysql-oms mysql-wms mysql-tms redis || true
+            docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml down -v --remove-orphans || true
+            sleep 10
+          done
+          exit 1
 
       - name: Start Kafka infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d kafka
