@@ -145,6 +145,29 @@ jobs:
       - name: Cucumber E2E-K05 on edge + Kafka stack
         run: bash scripts/run-e2e-edge-kafka.sh
 
+      - name: Report E2E-K05 diagnostics
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          report_dir = Path("scm-integration-tests/target/surefire-reports")
+          reports = sorted(report_dir.glob("*.txt")) + sorted(report_dir.glob("*.xml"))
+          if not reports:
+              print("::error file=scm-integration-tests::No surefire reports were generated")
+              raise SystemExit(0)
+
+          def escape(value: str) -> str:
+              return (value.replace("%", "%25")
+                           .replace("\r", "%0D")
+                           .replace("\n", "%0A"))
+
+          for report in reports[:6]:
+              text = report.read_text(encoding="utf-8", errors="replace")
+              summary = text[-1800:] if len(text) > 1800 else text
+              print(f"::error file={report}::{escape(summary)}")
+          PY
+
       - name: Stop edge + Kafka stack
         if: always()
         run: bash scripts/stop-edge-kafka.sh
