@@ -56,7 +56,12 @@ class EdgeKafkaStackConfigTest {
         assertTrue(compose.contains("PLAINTEXT://kafka:9092"));
         assertTrue(compose.contains("EXTERNAL://localhost:9092"));
         assertTrue(compose.contains("KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
+        assertTrue(compose.contains("KAFKA_ENABLE_KRAFT"));
+        assertTrue(compose.contains("KAFKA_CFG_BROKER_ID"));
         assertTrue(compose.contains("KAFKA_KRAFT_CLUSTER_ID"));
+        assertTrue(compose.contains("KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR"));
+        assertTrue(compose.contains("KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR"));
+        assertTrue(compose.contains("KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR"));
         assertTrue(compose.contains("ALLOW_PLAINTEXT_LISTENER"));
     }
 
