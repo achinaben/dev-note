@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.scm.contract.OpenApiContractDriftTest" time="0.114" tests="8" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="25"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="GBK"/>
+    <property name="java.class.path" value="E:\note\开发-note\scm-platform\scm-contract-check\target\test-classes;E:\note\开发-note\scm-platform\scm-contract-check\target\classes;E:\note\开发-note\scm-platform\scm-common\target\classes;D:\dev\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.15.4\jackson-datatype-jsr310-2.15.4.jar;D:\dev\repository\com\networknt\json-schema-validator\1.0.87\json-schema-validator-1.0.87.jar;D:\dev\repository\com\ethlo\time\itu\1.7.0\itu-1.7.0.jar;D:\dev\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;D:\dev\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;D:\dev\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;D:\dev\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;D:\dev\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-databind\2.15.4\jackson-databind-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-annotations\2.15.4\jackson-annotations-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-core\2.15.4\jackson-core-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.0\jackson-dataformat-yaml-2.17.0.jar;D:\dev\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;"/>
+    <property name="java.vm.vendor" value="JetBrains s.r.o."/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://www.jetbrains.com/"/>
+    <property name="user.timezone" value="GMT+08:00"/>
+    <property name="os.name" value="Windows 10"/>
+    <property name="java.vm.specification.version" value="25"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="CN"/>
+    <property name="sun.boot.library.path" value="D:\dev\idea-2026.1.win\jbr\bin"/>
+    <property name="sun.java.command" value="D:\tmp\surefire3090168233466449226\surefirebooter-20260601172103214_60.jar D:\tmp\surefire3090168233466449226 2026-06-01T17-20-35_622-jvmRun1 surefire-20260601172103214_58tmp surefire_8-20260601172103214_59tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="E:\note\开发-note\scm-platform\scm-contract-check\target\test-classes;E:\note\开发-note\scm-platform\scm-contract-check\target\classes;E:\note\开发-note\scm-platform\scm-common\target\classes;D:\dev\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.15.4\jackson-datatype-jsr310-2.15.4.jar;D:\dev\repository\com\networknt\json-schema-validator\1.0.87\json-schema-validator-1.0.87.jar;D:\dev\repository\com\ethlo\time\itu\1.7.0\itu-1.7.0.jar;D:\dev\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;D:\dev\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;D:\dev\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;D:\dev\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;D:\dev\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;D:\dev\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-databind\2.15.4\jackson-databind-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-annotations\2.15.4\jackson-annotations-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\core\jackson-core\2.15.4\jackson-core-2.15.4.jar;D:\dev\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.0\jackson-dataformat-yaml-2.17.0.jar;D:\dev\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\10211"/>
+    <property name="user.language" value="zh"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-01-20"/>
+    <property name="java.home" value="D:\dev\idea-2026.1.win\jbr"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="E:\note\开发-note\scm-platform\scm-contract-check"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="intellij.os.virtualization" value="none"/>
+    <property name="jbr.virtualization.information" value="No virtualization detected"/>
+    <property name="surefire.real.class.path" value="D:\tmp\surefire3090168233466449226\surefirebooter-20260601172103214_60.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="25.0.2+1-b329.72"/>
+    <property name="user.name" value="10211"/>
+    <property name="stdout.encoding" value="GBK"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="JBR-25.0.2+1-329.72-jcef"/>
+    <property name="localRepository" value="D:\dev\repository"/>
+    <property name="java.vendor.url.bug" value="https://youtrack.jetbrains.com/issues/JBR"/>
+    <property name="java.io.tmpdir" value="D:\tmp\"/>
+    <property name="java.version" value="25.0.2"/>
+    <property name="user.dir" value="E:\note\开发-note\scm-platform\scm-contract-check"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="GBK"/>
+    <property name="java.library.path" value="D:\dev\idea-2026.1.win\jbr\bin;C:\windows\Sun\Java\bin;C:\windows\system32;C:\windows;C:\Program Files\PowerShell\7;d:\dev\cursor\cursor\resources\app\resources\helpers;D:\dev\vmware17.0.2\bin\;C:\Python310\Scripts\;C:\Python310\;C:\Python38\Scripts\;C:\Python38\;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Docker\Docker\Resources\bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\dev\Git\bin;D:\dev\Git\mingw64\libexec\git-core;D:\dev\jdk-8u151\bin;D:\dev\jdk-8u151\lib\dt.jar;D:\dev\jdk-8u151\lib\tools.jar;D:\dev\jdk-8u151\jre\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\chocolatey\bin;D:\dev\Git XL;D:\dev\TortoiseGit\bin;D:\dev\lua5.1.5-52;D:\dev\lua5.1.5-52\clibs;D:\dev\apache-maven-3.6.3\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;tcp://192.168.86.153:2375;D:\dev\Microsoft VS Code\bin;D:\dev\TortoiseSVN\bin;D:\dev\Redis-x64-3.2.100;D:\dev\apache-jmeter-5.4\bin;D:\dev\Git\cmd;D:\dev\strawberry-perl-5.32.1.1-64bit\perl\bin;D:\dev\nasm-2.15.05;C:\Program Files\OpenSSL\bin;C:\Program Files\OpenSSL\bin;D:\dev\apache-zookeeper-3.8.1-bin\bin;D:\dev\kafka_2.13-3.4.0\bin\windows;D:\dev\mongodb6.0.8\bin;D:\dev\rocketmq-all-5.1.4-bin-release\bin;D:\dev\nexus-3.67.1-01-java11-win64\nexus-3.67.1-01\bin;D:\dev\nvm;C:\Program Files\nodejs;%NODE_PATH%;D:\dev\mingw64\bin;D:\dev\xmanager\Xmanager 7\;D:\dev\xmanager\Xshell 7\;D:\dev\xmanager\Xftp 7\;D:\dev\xmanager\Xlpd 7\;D:\dev\go-1.22.5/bin;D:\dev\go-1.22.5\bin;D:\dev\GOPATH;D:\dev\go-1.22.5;D:\dev\go-1.22.5\bin;D:\dev\GOPATH\bin;D:\dev\MinGW\bin;D:\dev\msys64\mingw64\bin;C:\Program Files (x86)\dotnet\;D:\dev\cursor\cursor\resources\app\bin;D:\dev\CMake\bin;C:\Program Files\PowerShell\7\;D:\dev\python3.12.10\Scripts\;D:\dev\python3.12.10\;d:\dev\cursor\cursor\resources\app\codeBin;C:\Users\10211\.cargo\bin;C:\Users\10211\AppData\Local\Microsoft\WindowsApps;D:\dev\IntelliJ IDEA 2022.2.1\bin;D:\dev\DataGrip 2020.1\bin;C:\Users\10211\AppData\Roaming\npm;D:\dev\nvm;C:\Program Files\nodejs;C:\Users\10211\AppData\Local\inkdrop\bin;C:\Users\10211\go\bin;D:\dev\WebStorm 2023.3.4\bin;;D:\dev\IntelliJ IDEA 2024.1.4\bin;;D:\dev\GoLand 2025.1\bin;;D:\dev\Fiddler5;D:\dev\cursor\resources\app\bin;D:\dev\cpolar\;D:\dev\Antigravity\bin;D:\dev\PyCharm 2025.3.3\bin;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="GBK"/>
+    <property name="java.vendor" value="JetBrains s.r.o."/>
+    <property name="java.vm.version" value="25.0.2+1-b329.72"/>
+    <property name="stdin.encoding" value="GBK"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="69.0"/>
+  </properties>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.026"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.006"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.006"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.005"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.004"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.005"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.005"/>
+  <testcase name="requiredFieldsMatchBindings" classname="com.scm.contract.OpenApiContractDriftTest" time="0.002"/>
+</testsuite>

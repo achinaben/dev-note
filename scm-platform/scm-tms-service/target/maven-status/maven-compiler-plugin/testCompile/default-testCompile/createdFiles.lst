@@ -1,0 +1,7 @@
+com\scm\tms\api\CreateShipmentContractTest.class
+com\scm\tms\api\ShipmentIdempotentTest.class
+com\scm\tms\api\CarrierCallbackContractTest.class
+com\scm\tms\freight\FreightEstimateMockCarrierTest.class
+com\scm\tms\api\CarrierCallbackWireMockTest.class
+com\scm\tms\api\ShipmentInterceptTest.class
+com\scm\tms\api\FreightEstimateContractTest.class

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["client_token", "buyer_id", "channel", "address_id", "lines"],
+  "properties": {
+    "client_token": { "type": "string", "minLength": 1 },
+    "buyer_id": { "type": "string", "minLength": 1 },
+    "channel": { "type": "string" },
+    "shop_id": { "type": "string" },
+    "address_id": { "type": "string" },
+    "delivery_type": { "type": "string", "enum": ["EXPRESS", "PICKUP"] },
+    "pay_channel": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku_id", "qty", "warehouse_id"],
+        "properties": {
+          "sku_id": { "type": "string" },
+          "qty": { "type": "string" },
+          "warehouse_id": { "type": "string" }
+        }
+      }
+    }
+  }
+}

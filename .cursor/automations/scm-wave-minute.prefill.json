@@ -1,0 +1,24 @@
+{
+  "name": "SCM 波次推进",
+  "description": "每分钟触发：读 AGENTS.md 推进 scm-platform 波次；mvn test；更新 progress.md。工作区：开发-note。",
+  "workflow": {
+    "triggers": [
+      {
+        "cron": {
+          "cron": "* * * * *"
+        }
+      }
+    ],
+    "actions": [],
+    "prompts": [
+      {
+        "prompt": "你是 scm-platform 实现 Agent。定时触发，每轮一条任务，不要问我是否继续。先读 scm-platform/progress.md 与 AGENTS.md。防重：仅当 2 分钟内刚写过「跳过」且无代码变更时才跳过。跟 AGENTS「下一步」做 W37（勿因 W36 已完成就停）。工作目录 scm-platform；改代码后 mvn test；更新 progress 运行日志。阻塞项不阻止可做项。结束时 3～5 条中文 bullet。"
+      }
+    ],
+    "model": "",
+    "agentOptions": {
+      "skipInstall": false
+    },
+    "memoryEnabled": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["waybill_no", "events"],
+  "properties": {
+    "waybill_no": { "type": "string" },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["waybill_no", "event_code", "source", "event_at"],
+        "properties": {
+          "waybill_no": { "type": "string" },
+          "event_code": { "type": "string" },
+          "source": { "type": "string" },
+          "event_at": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,187 @@
+# 四服务 + MySQL 全栈（W35）。用法: docker compose -f docker-compose.yml -f docker-compose.full.yml up -d --build
+services:
+  scm-erp:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-erp-service
+    environment:
+      SPRING_PROFILES_ACTIVE: jdbc,docker,docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-erp:3306/scm_erp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SCM_STORAGE: jdbc
+    ports: ["8084:8084"]
+    depends_on:
+      mysql-erp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --connect-timeout 2 http://127.0.0.1:8084/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  scm-oms:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-oms-service
+    environment:
+      SPRING_PROFILES_ACTIVE: jdbc,docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-oms:3306/scm_oms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SCM_STORAGE: jdbc
+      SCM_OMS_BASE_URL: http://scm-oms:8081
+      SCM_WMS_BASE_URL: http://scm-wms:8082
+      SCM_TMS_BASE_URL: http://scm-tms:8083
+      SCM_ERP_BASE_URL: http://scm-erp:8084
+    ports: ["8081:8081"]
+    depends_on:
+      mysql-oms:
+        condition: service_healthy
+      scm-erp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --connect-timeout 2 http://127.0.0.1:8081/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+
+  scm-wms:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-wms-service
+    environment:
+      SPRING_PROFILES_ACTIVE: jdbc,docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-wms:3306/scm_wms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SCM_STORAGE: jdbc
+      TMS_BASE_URL: http://scm-tms:8083
+      SCM_ERP_BASE_URL: http://scm-erp:8084
+    ports: ["8082:8082"]
+    depends_on:
+      mysql-wms:
+        condition: service_healthy
+      scm-tms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --connect-timeout 2 http://127.0.0.1:8082/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  scm-tms:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-tms-service
+    environment:
+      SPRING_PROFILES_ACTIVE: jdbc,docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-tms:3306/scm_tms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SCM_STORAGE: jdbc
+    ports: ["8083:8083"]
+    depends_on:
+      mysql-tms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --connect-timeout 2 http://127.0.0.1:8083/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  mysql-erp:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  mysql-oms:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  mysql-wms:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  mysql-tms:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  scm-mock-pay:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-mock-pay
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports: ["8085:8085"]
+    depends_on:
+      scm-oms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8085/ >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  scm-mock-carrier:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-mock-carrier
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports: ["8086:8086"]
+    depends_on:
+      scm-tms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8086/ >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  scm-mock-inventory:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.service
+      args:
+        MODULE: scm-mock-inventory
+    ports: ["8087:8087"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8087/ >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 20s

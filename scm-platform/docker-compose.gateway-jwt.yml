@@ -1,0 +1,15 @@
+# OpenResty JWT 网关（docker 全栈内网 upstream）。与 docker-compose.full.yml 联用。
+services:
+  scm-gateway-jwt:
+    build:
+      context: ./deploy/openresty
+      dockerfile: Dockerfile
+    ports: ["8080:8080"]
+    environment:
+      SCM_JWT_ISSUER: http://localhost:8180/realms/scm
+    depends_on:
+      scm-oms:
+        condition: service_healthy
+      scm-wms:
+        condition: service_healthy
+    profiles: ["gateway-jwt"]

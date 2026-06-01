@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["package_no", "order_no", "weight_kg", "volume_cm3", "sender", "receiver"],
+  "properties": {
+    "package_no": { "type": "string" },
+    "order_no": { "type": "string" },
+    "carrier_code": { "type": "string" },
+    "weight_kg": { "type": "string" },
+    "volume_cm3": { "type": "integer" },
+    "sender": { "type": "object" },
+    "receiver": { "type": "object" },
+    "waybill_no": { "type": "string" }
+  }
+}

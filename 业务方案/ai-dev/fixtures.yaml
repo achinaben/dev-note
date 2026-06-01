@@ -1,0 +1,34 @@
+# 供应链四系统 — 固定测试夹具（AI 与 E2E 禁止修改键名）
+version: 1
+
+FIX:
+  buyer_id: U10001
+  shop_id: SHOP01
+  sku_id: SKU001
+  material_code: M001
+  warehouse_code: WH-SH-01
+  org_id: ORG001
+  org_code: ORG001
+  partner_id: C10001
+  supplier_id: S10001
+  client_token: ct-fix-001
+  carrier_code: SF
+  product_code: STANDARD
+  currency: CNY
+
+  # 预期编号前缀（实现可带日期，测试用正则匹配）
+  trade_no_prefix: T
+  order_no_prefix: O
+  package_no_prefix: P
+  outbound_no_prefix: OB
+  shipment_no_prefix: SH
+
+amounts:
+  unit_price: "99.5000"
+  qty: "2.0000"
+  pay_amount: "199.0000"
+  credit_limit: "500000.0000"
+
+timeouts:
+  pay_expire_minutes: 15
+  e2e_step_timeout_seconds: 120

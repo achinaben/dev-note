@@ -1,0 +1,14 @@
+scm:
+
+  event:
+
+    transport: kafka
+
+    kafka-bootstrap-servers: localhost:9092
+
+spring:
+
+  kafka:
+
+    bootstrap-servers: localhost:9092
+

@@ -1,0 +1,22 @@
+# APISIX JWT 路由样例（与 gateway-jwt.sample.yaml 语义对齐）
+routes:
+  - uri: /api/v1/orders
+    methods: [POST]
+    plugins:
+      jwt-auth: {}
+      key-auth:
+        header: X-Api-Key
+    upstream:
+      nodes:
+        "127.0.0.1:8081": 1
+
+consumers:
+  - username: scm-gateway
+    plugins:
+      jwt-auth:
+        key: scm-gateway
+        secret: ${JWT_HS256_SECRET}
+      key-auth:
+        key: e2e-gateway-key
+
+# 生产建议 RS256：openid-connect 插件 + Keycloak issuer/jwks（见 jwt-oms-integration.md）

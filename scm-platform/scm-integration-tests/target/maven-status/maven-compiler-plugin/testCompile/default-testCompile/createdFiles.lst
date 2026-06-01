@@ -1,0 +1,8 @@
+com\scm\e2e\RunCucumberJdbcE2E.class
+com\scm\e2e\E2EStepDefinitions.class
+com\scm\e2e\ScmScenarioContext.class
+com\scm\e2e\RunCucumberKafkaE2E.class
+com\scm\e2e\ScmScenarioContext$State.class
+com\scm\e2e\B2CLocalFlowIT.class
+com\scm\e2e\RunCucumberE2E.class
+com\scm\e2e\CucumberSmokeTest.class

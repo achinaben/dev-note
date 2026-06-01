@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["event_id", "event_type", "biz_key", "schema_version", "occurred_at", "data"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "event_type": { "type": "string" },
+    "biz_key": { "type": "string" },
+    "schema_version": { "type": "integer" },
+    "occurred_at": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "producer": { "type": "string" },
+    "data": { "type": "object" }
+  }
+}

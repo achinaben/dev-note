@@ -1,0 +1,7 @@
+# 与 profile jwt 叠加：Keycloak RS256 验签（E2E-JWT02 / 预发）
+scm:
+  security:
+    jwt:
+      verify-signature: true
+      jwks-uri: ${SCM_JWT_JWKS_URI:http://localhost:8180/realms/scm/protocol/openid-connect/certs}
+      issuer: ${SCM_JWT_ISSUER:http://localhost:8180/realms/scm}

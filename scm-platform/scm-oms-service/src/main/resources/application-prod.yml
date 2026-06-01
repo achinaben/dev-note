@@ -1,0 +1,36 @@
+scm:
+
+  ops:
+
+    enabled: false
+
+  integration:
+
+    require-api-key: true
+
+    api-key: ${SCM_INTEGRATION_API_KEY:prod-integration-key}
+
+  inventory:
+
+    provider: ${SCM_INVENTORY_PROVIDER:wms}
+
+    remote-enabled: true
+
+    wms-base-url: ${SCM_WMS_URL:http://wms-service:8082}
+
+    base-url: ${SCM_INVENTORY_URL:}
+
+  security:
+
+    jwt:
+
+      enabled: true
+
+      verify-signature: true
+
+      jwks-uri: ${SCM_JWT_JWKS_URI:http://keycloak:8080/realms/scm/protocol/openid-connect/certs}
+
+      issuer: ${SCM_JWT_ISSUER:http://keycloak:8080/realms/scm}
+
+      required-scope: oms.write
+

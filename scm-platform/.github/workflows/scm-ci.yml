@@ -1,0 +1,392 @@
+name: SCM Platform CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Unit tests
+        run: mvn -B test
+
+      - name: Sync OpenAPI into contract-check
+        run: bash scripts/sync-openapi-contracts.sh
+
+      - name: OpenAPI contract drift check
+        run: mvn -B -pl scm-contract-check test
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Tests with JaCoCo
+        run: mvn -B -Pcoverage verify
+
+      - name: Upload JaCoCo reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports
+          path: "**/target/site/jacoco/**"
+          if-no-files-found: warn
+
+  coverage-gate:
+    runs-on: ubuntu-latest
+    needs: coverage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Tests with JaCoCo (for CSV)
+        run: mvn -B -Pcoverage verify
+      - name: Coverage threshold gate
+        run: chmod +x scripts/check-coverage.sh && COVERAGE_MIN=0.50 ./scripts/check-coverage.sh
+
+  keycloak-smoke:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start Keycloak
+        run: docker compose -f docker-compose.keycloak.yml up -d --wait
+      - name: Fetch token
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -X POST "http://localhost:8180/realms/scm/protocol/openid-connect/token" \
+              -d "grant_type=password" -d "client_id=scm-gateway" \
+              -d "username=e2e-user" -d "password=e2e-pass" | grep -q access_token; then
+              echo "Keycloak token OK"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Keycloak token failed" >&2
+          exit 1
+
+  sonar:
+    runs-on: ubuntu-latest
+    needs: coverage
+    if: ${{ secrets.SONAR_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: SonarCloud scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B -Pcoverage,sonar sonar:sonar -Dsonar.projectKey=scm-platform
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+
+      - name: Start four services
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=180
+          bash scripts/start-all.sh
+
+      - name: Cucumber E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e test
+
+      - name: Gateway smoke E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-gateway-smoke test
+
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-kafka:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+
+      - name: Start services with Kafka
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=240
+          export USE_KAFKA=1
+          bash scripts/start-all.sh
+
+      - name: Cucumber Kafka E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-kafka test
+
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-jdbc:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+
+      - name: Start services with MySQL jdbc
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=240
+          export USE_JDBC=1
+          bash scripts/start-all.sh
+
+      - name: Cucumber jdbc E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-jdbc test
+
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-strict-jdbc:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+
+      - name: Start services (jdbc + WMS strict)
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=240
+          export USE_JDBC=1
+          export USE_WMS_STRICT=1
+          bash scripts/start-all.sh
+
+      - name: Cucumber strict jdbc E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-strict-jdbc test
+
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-strict-outbound:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+
+      - name: Start services (WMS strict outbound)
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=180
+          export USE_WMS_STRICT=1
+          bash scripts/start-all.sh
+
+      - name: Cucumber strict outbound E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-strict-outbound test
+
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-jwt:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+      - name: Start services (OMS jwt)
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=180
+          export USE_OMS_JWT=1
+          bash scripts/start-all.sh
+      - name: Cucumber JWT E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e-jwt test
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  e2e-jwt-jwks:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Start Keycloak
+        run: docker compose -f docker-compose.keycloak.yml up -d --wait
+      - name: Build artifacts
+        run: mvn -B -q install -DskipTests
+      - name: Start services (OMS jwt + jwks)
+        run: |
+          chmod +x scripts/*.sh
+          export WAIT_SECONDS=180
+          export USE_OMS_JWT=1
+          export USE_OMS_JWT_JWKS=1
+          bash scripts/start-all.sh
+      - name: Wait for Keycloak token
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -X POST "http://localhost:8180/realms/scm/protocol/openid-connect/token" \
+              -d "grant_type=password" -d "client_id=scm-gateway" \
+              -d "username=e2e-user" -d "password=e2e-pass" \
+              -d "scope=openid oms.write" | grep -q access_token; then
+              echo "Keycloak token OK"
+              exit 0
+            fi
+            sleep 3
+          done
+          exit 1
+      - name: Cucumber JWT JWKS E2E
+        env:
+          SCM_JWT_STRICT: "1"
+        run: mvn -B -pl scm-integration-tests -Pe2e-jwt-jwks test
+      - name: Stop services
+        if: always()
+        run: bash scripts/stop-all.sh
+
+  docker-it:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Testcontainers (Jdbc + Outbox/Kafka)
+        run: mvn -B -Pdocker-it test
+
+  docker-stack-smoke:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start full stack (MySQL + 四服务 + mock)
+        run: |
+          chmod +x scripts/*.sh
+          docker compose -f docker-compose.yml -f docker-compose.full.yml up -d --build
+      - name: Wait for ports
+        run: |
+          for _ in $(seq 1 90); do
+            ok=1
+            for p in 8081 8082 8083 8084 8085 8086 8087; do
+              nc -z localhost $p || ok=0
+            done
+            if [ "$ok" = "1" ]; then echo "ports ready"; exit 0; fi
+            sleep 5
+          done
+          echo "stack timeout" >&2
+          docker compose -f docker-compose.yml -f docker-compose.full.yml ps
+          exit 1
+      - name: Stop stack
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml down
+
+  e2e-stack-smoke:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    continue-on-error: true
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Start full stack
+        run: |
+          chmod +x scripts/*.sh
+          docker compose -f docker-compose.yml -f docker-compose.full.yml up -d --build
+      - name: Wait for OMS
+        run: |
+          for i in $(seq 1 90); do
+            if curl -sf -o /dev/null -w "%{http_code}" http://localhost:8081/ | grep -qE '^[23]'; then
+              echo "OMS up"; exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+      - name: Cucumber stack smoke E2E
+        run: mvn -B -pl scm-integration-tests -Pe2e test -Dcucumber.filter.tags='@smoke and @e2e'
+      - name: Stop stack
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml down

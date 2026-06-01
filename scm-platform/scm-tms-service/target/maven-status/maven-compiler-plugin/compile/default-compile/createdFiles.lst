@@ -1,0 +1,17 @@
+com\scm\tms\shipment\ShipmentApplicationService$CreateResult.class
+com\scm\tms\integration\HttpCarrierGateway.class
+com\scm\tms\api\TmsOpsController.class
+com\scm\tms\api\CarrierCallbackController.class
+com\scm\tms\api\ShipmentInterceptController.class
+com\scm\tms\api\ShipmentController.class
+com\scm\tms\integration\CarrierGateway.class
+com\scm\tms\api\FreightController.class
+com\scm\tms\shipment\JdbcShipmentStore.class
+com\scm\tms\shipment\ShipmentApplicationService.class
+com\scm\tms\shipment\ShipmentRecord.class
+com\scm\tms\shipment\ShipmentStore.class
+com\scm\tms\integration\HttpCarrierGateway$1.class
+com\scm\tms\TmsApplication.class
+com\scm\tms\api\DeliverController.class
+com\scm\tms\shipment\InMemoryShipmentStore.class
+com\scm\tms\freight\FreightApplicationService.class

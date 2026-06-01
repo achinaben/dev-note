@@ -1,0 +1,16 @@
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\BindWaybillContractTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\CarrierCallbackContractTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\CarrierCallbackWireMockTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\CreateShipmentCarrierTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\CreateShipmentContractTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\FreightEstimateContractTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\ShipmentIdempotentTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\api\ShipmentInterceptTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\freight\FreightEstimateMockCarrierTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\freight\FreightRoutingTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\shipment\BindWaybillFromHandoverTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\shipment\CreatePreservesHandoverWaybillTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\shipment\ShipmentStoreTest.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\shipment\TmsShipmentJdbcIT.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\support\WireMockTestServer.java
+E:\note\开发-note\scm-platform\scm-tms-service\src\test\java\com\scm\tms\track\TmsTrackEventJdbcIT.java

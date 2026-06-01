@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["waybill_no", "carrier_status", "event_time"],
+  "properties": {
+    "waybill_no": { "type": "string" },
+    "carrier_status": { "type": "string" },
+    "event_time": { "type": "string" },
+    "location": { "type": "string" }
+  }
+}

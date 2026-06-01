@@ -1,0 +1,4 @@
+server:
+  port: 8086
+tms:
+  callback-base-url: http://localhost:8083/tms/v1/integration/carrier

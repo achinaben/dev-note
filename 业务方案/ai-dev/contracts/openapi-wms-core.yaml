@@ -1,0 +1,103 @@
+openapi: 3.1.0
+info:
+  title: SCM WMS Core API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082/wms/v1
+paths:
+  /outbound/create:
+    post:
+      operationId: createOutbound
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOutboundRequest'
+      responses:
+        '201':
+          description: created
+        '409':
+          description: duplicate package_no
+  /outbound/{outboundNo}/allocate:
+    post:
+      operationId: allocateOutbound
+      parameters:
+        - name: outboundNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: allocated
+  /outbound/{outboundNo}/cancel:
+    post:
+      operationId: cancelOutbound
+      parameters:
+        - name: outboundNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: cancelled
+  /rf/v1/pick/confirm:
+    post:
+      operationId: rfPickConfirm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [task_no, operation_id, lines]
+              properties:
+                task_no: { type: string }
+                operation_id: { type: string }
+                lines: { type: array, items: { type: object } }
+  /rf/v1/ship/handover:
+    post:
+      operationId: rfShipHandover
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [outbound_no, waybill_no, weight_kg, handover_at]
+              properties:
+                outbound_no: { type: string }
+                waybill_no: { type: string }
+                weight_kg: { type: string }
+                handover_at: { type: string, format: date-time }
+components:
+  schemas:
+    CreateOutboundRequest:
+      type: object
+      required: [package_no, source_order_no, warehouse_code, delivery_type, lines, receiver]
+      properties:
+        package_no: { type: string }
+        source_order_no: { type: string }
+        warehouse_code: { type: string }
+        delivery_type: { type: string }
+        carrier_code: { type: string }
+        lines:
+          type: array
+          items:
+            type: object
+            required: [sku_code, qty]
+            properties:
+              sku_code: { type: string }
+              qty: { type: string }
+        receiver:
+          type: object
+          required: [name, phone, province, city, district, address]
+          properties:
+            name: { type: string }
+            phone: { type: string }
+            province: { type: string }
+            city: { type: string }
+            district: { type: string }
+            address: { type: string }

@@ -1,0 +1,24 @@
+# API 网关鉴权与限流样例（Nginx / APISIX / Spring Cloud Gateway 可映射）
+version: 1
+listen: ":8080"
+
+auth:
+  mode: api_key
+  header: X-Api-Key
+  keys:
+    - id: e2e-client
+      key: ${GATEWAY_API_KEY:e2e-gateway-key}
+      scopes: [oms.read, oms.write]
+    - id: integration
+      key: ${GATEWAY_INTEGRATION_KEY:prod-integration-key}
+      scopes: [integration]
+
+rate_limit:
+  # Nginx: limit_req_zone + limit_req；Gateway: RequestRateLimiter
+  zone_name: scm_api
+  rate: 100
+  unit: r/s
+  burst: 200
+  key_by: $binary_remote_addr
+
+routes_ref: gateway-routes.sample.yaml

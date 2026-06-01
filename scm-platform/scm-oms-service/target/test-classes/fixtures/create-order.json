@@ -1,0 +1,16 @@
+{
+  "client_token": "ct-fix-001",
+  "buyer_id": "U10001",
+  "channel": "APP",
+  "shop_id": "SHOP01",
+  "address_id": "ADDR100",
+  "delivery_type": "EXPRESS",
+  "pay_channel": "WECHAT",
+  "lines": [
+    {
+      "sku_id": "SKU001",
+      "qty": "2.0000",
+      "warehouse_id": "WH-SH-01"
+    }
+  ]
+}

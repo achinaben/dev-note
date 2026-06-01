@@ -1,0 +1,31 @@
+# JWT / OAuth2 网关样例（Spring Authorization Server / Keycloak / APISIX jwt-auth 可映射）
+version: 1
+listen: ":8080"
+
+oauth2:
+  issuer: https://auth.example.com/realms/scm
+  jwks_uri: https://auth.example.com/realms/scm/protocol/openid-connect/certs
+  audiences: [scm-api]
+  scopes_required:
+    oms.write: [oms:order:create, oms:order:pay]
+    wms.write: [wms:outbound:ship]
+
+routes:
+  - path: /api/v1/orders
+    methods: [POST]
+    scope: oms.write
+    upstream: http://127.0.0.1:8081
+  - path: /wms/v1/outbound/**
+    scope: wms.write
+    upstream: http://127.0.0.1:8082
+
+rate_limit:
+  zone_name: scm_jwt_api
+  rate: 200
+  unit: r/s
+
+headers:
+  pass_through:
+    - Authorization
+    - Idempotency-Key
+    - X-Org-Id

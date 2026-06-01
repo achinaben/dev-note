@@ -1,0 +1,15 @@
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\api\CreateOutboundContractTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\api\InventoryAllocationContractTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\api\OutboundIdempotentTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\api\RfPickConfirmContractTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\integration\OutboundShipIT.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\integration\ShipHandoverPublishesEventTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\inventory\AllocationConcurrentTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\inventory\fefo\AllocationServiceFefoTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\inventory\WmsInventoryJdbcIT.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\outbound\OutboundStateMachineTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\outbound\OutboundStoreTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\outbound\WmsOutboundJdbcIT.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\outbound\WmsOutboundStrictJdbcIT.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\pick\PickConfirmIdempotentTest.java
+E:\note\开发-note\scm-platform\scm-wms-service\src\test\java\com\scm\wms\pick\WmsPickConfirmJdbcIT.java

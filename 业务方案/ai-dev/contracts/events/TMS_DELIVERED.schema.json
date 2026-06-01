@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scm.local/schemas/events/TMS_DELIVERED.v1.json",
+  "type": "object",
+  "required": ["shipment_no", "waybill_no", "package_no", "order_no", "delivered_at", "pod_type"],
+  "properties": {
+    "shipment_no": { "type": "string" },
+    "waybill_no": { "type": "string" },
+    "package_no": { "type": "string" },
+    "order_no": { "type": "string" },
+    "delivered_at": { "type": "string", "format": "date-time" },
+    "pod_type": { "type": "string", "enum": ["SIGN", "AGENT", "LOCKER"] },
+    "signer": { "type": "string" }
+  }
+}

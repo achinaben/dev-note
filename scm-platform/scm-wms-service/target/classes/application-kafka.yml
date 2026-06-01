@@ -1,0 +1,18 @@
+scm:
+
+  event:
+
+    transport: kafka
+
+    kafka-bootstrap-servers: localhost:9092
+
+  integration:
+
+    erp-shipment: kafka
+
+spring:
+
+  kafka:
+
+    bootstrap-servers: localhost:9092
+

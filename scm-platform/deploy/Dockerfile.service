@@ -1,0 +1,37 @@
+# 构建单个 Spring Boot 服务：docker build --build-arg MODULE=scm-oms-service -f deploy/Dockerfile.service .
+ARG MODULE=scm-oms-service
+FROM maven:3.9-eclipse-temurin-17 AS build
+ARG MODULE
+WORKDIR /build
+COPY pom.xml .
+COPY scm-common/pom.xml scm-common/
+COPY scm-common-spring/pom.xml scm-common-spring/
+COPY scm-erp-service/pom.xml scm-erp-service/
+COPY scm-oms-service/pom.xml scm-oms-service/
+COPY scm-wms-service/pom.xml scm-wms-service/
+COPY scm-tms-service/pom.xml scm-tms-service/
+COPY scm-mock-pay/pom.xml scm-mock-pay/
+COPY scm-mock-carrier/pom.xml scm-mock-carrier/
+COPY scm-mock-inventory/pom.xml scm-mock-inventory/
+COPY scm-integration-tests/pom.xml scm-integration-tests/
+COPY scm-contract-check/pom.xml scm-contract-check/
+RUN mvn -q -pl "${MODULE}" -am dependency:go-offline -DskipTests || true
+COPY scm-common scm-common
+COPY scm-common-spring scm-common-spring
+COPY scm-erp-service scm-erp-service
+COPY scm-oms-service scm-oms-service
+COPY scm-wms-service scm-wms-service
+COPY scm-tms-service scm-tms-service
+COPY scm-mock-pay scm-mock-pay
+COPY scm-mock-carrier scm-mock-carrier
+COPY scm-mock-inventory scm-mock-inventory
+RUN mvn -q -pl "${MODULE}" -am package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+ARG MODULE
+RUN apk add --no-cache curl
+WORKDIR /app
+COPY --from=build /build/${MODULE}/target/*.jar app.jar
+ENV JAVA_OPTS="-Xmx384m -Xms128m"
+EXPOSE 8080
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

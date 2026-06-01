@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scm.local/schemas/event-envelope.v1.json",
+  "title": "ScmEventEnvelope",
+  "type": "object",
+  "required": ["event_id", "event_type", "biz_key", "schema_version", "occurred_at", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": { "type": "string", "minLength": 8, "maxLength": 64 },
+    "event_type": { "type": "string", "minLength": 3, "maxLength": 64 },
+    "biz_key": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "trace_id": { "type": "string", "maxLength": 64 },
+    "producer": { "type": "string", "enum": ["OMS", "WMS", "TMS", "ERP"] },
+    "data": { "type": "object" }
+  }
+}

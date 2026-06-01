@@ -1,0 +1,4 @@
+server:
+  port: 8085
+oms:
+  notify-url: http://localhost:8081/api/v1/payments/notify/wechat

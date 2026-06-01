@@ -1,0 +1,13 @@
+com\scm\wms\api\OutboundIdempotentTest.class
+com\scm\wms\api\CreateOutboundContractTest.class
+com\scm\wms\inventory\fefo\AllocationServiceFefoTest.class
+com\scm\wms\api\RfPickConfirmContractTest.class
+com\scm\wms\pick\PickConfirmIdempotentTest.class
+com\scm\wms\outbound\OutboundStoreTest.class
+com\scm\wms\integration\ShipHandoverPublishesEventTest.class
+com\scm\wms\inventory\AllocationConcurrentTest.class
+com\scm\wms\api\InventoryAllocationContractTest.class
+com\scm\wms\outbound\OutboundStateMachineTest.class
+com\scm\wms\outbound\WmsOutboundJdbcIT.class
+com\scm\wms\integration\OutboundShipIT.class
+com\scm\wms\inventory\WmsInventoryJdbcIT.class

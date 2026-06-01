@@ -1,0 +1,12 @@
+scm:
+
+  ops:
+
+    enabled: false
+
+  integration:
+
+    require-api-key: true
+
+    api-key: ${SCM_INTEGRATION_API_KEY:prod-integration-key}
+

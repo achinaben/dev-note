@@ -1,0 +1,21 @@
+{
+  "event_id": "E-fix-001",
+  "event_type": "ORDER_PAID",
+  "biz_key": "ORDER_PAID+O-fix-001",
+  "schema_version": 1,
+  "occurred_at": "2026-05-31T12:00:01+08:00",
+  "trace_id": "trace-fix-001",
+  "producer": "OMS",
+  "data": {
+    "trade_no": "T-fix-001",
+    "order_no": "O-fix-001",
+    "buyer_id": "U10001",
+    "channel": "APP",
+    "paid_amount": "199.0000",
+    "currency": "CNY",
+    "pay_time": "2026-05-31T12:00:01+08:00",
+    "lines": [
+      { "sku_id": "SKU001", "qty": "2.0000", "warehouse_id": "WH-SH-01" }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "oms-create-order-request",
+    "openapi": "openapi-oms-core.yaml",
+    "componentSchema": "CreateOrderRequest",
+    "testSchema": "scm-oms-service/src/test/resources/contracts/create-order-request.schema.json"
+  },
+  {
+    "name": "wms-create-outbound-request",
+    "openapi": "openapi-wms-core.yaml",
+    "componentSchema": "CreateOutboundRequest",
+    "testSchema": "scm-wms-service/src/test/resources/contracts/create-outbound-request.schema.json"
+  },
+  {
+    "name": "erp-wms-shipment-post",
+    "openapi": "openapi-erp-core.yaml",
+    "path": "/integration/wms/shipment",
+    "method": "post",
+    "testSchema": "scm-erp-service/src/test/resources/contracts/wms-shipment-post.schema.json"
+  },
+  {
+    "name": "tms-create-shipment-request",
+    "openapi": "openapi-tms-core.yaml",
+    "path": "/shipment/create",
+    "method": "post",
+    "testSchema": "scm-tms-service/src/test/resources/contracts/create-shipment-request.schema.json"
+  },
+  {
+    "name": "tms-freight-estimate-request",
+    "openapi": "openapi-tms-core.yaml",
+    "path": "/freight/estimate",
+    "method": "post",
+    "testSchema": "scm-tms-service/src/test/resources/contracts/freight-estimate-request.schema.json"
+  },
+  {
+    "name": "tms-bind-waybill-request",
+    "openapi": "openapi-tms-core.yaml",
+    "path": "/shipment/bind-waybill",
+    "method": "post",
+    "testSchema": "scm-tms-service/src/test/resources/contracts/bind-waybill-request.schema.json"
+  },
+  {
+    "name": "tms-carrier-callback-request",
+    "openapi": "openapi-tms-core.yaml",
+    "path": "/integration/carrier/{carrierCode}/callback",
+    "method": "post",
+    "testSchema": "scm-tms-service/src/test/resources/contracts/carrier-callback-request.schema.json"
+  },
+  {
+    "name": "inventory-reserve-request",
+    "openapi": "openapi-inventory.yaml",
+    "path": "/reserve",
+    "method": "post",
+    "testSchema": "scm-wms-service/src/test/resources/contracts/inventory-reserve-request.schema.json"
+  }
+]

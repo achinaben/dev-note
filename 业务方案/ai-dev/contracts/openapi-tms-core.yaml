@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+  title: SCM TMS Core API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8083/tms/v1
+paths:
+  /freight/estimate:
+    post:
+      operationId: estimateFreight
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from_warehouse_code, receiver, packages]
+              properties:
+                from_warehouse_code: { type: string }
+                receiver: { type: object }
+                packages: { type: array, items: { type: object } }
+                temp_zone: { type: string, enum: [NORMAL, COLD] }
+      responses:
+        '200':
+          description: options list
+  /shipment/create:
+    post:
+      operationId: createShipment
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [package_no, order_no, weight_kg, volume_cm3, sender, receiver]
+              properties:
+                package_no: { type: string }
+                order_no: { type: string }
+                carrier_code: { type: string }
+                weight_kg: { type: string }
+                volume_cm3: { type: integer }
+                sender: { type: object }
+                receiver: { type: object }
+                waybill_no: { type: string, description: WMS 事件或交接运单号 }
+      responses:
+        '201':
+          description: shipment created
+        '409':
+          description: duplicate
+  /shipment/bind-waybill:
+    post:
+      operationId: bindWaybillFromHandover
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [package_no, waybill_no]
+              properties:
+                package_no: { type: string }
+                order_no: { type: string }
+                waybill_no: { type: string }
+      responses:
+        '200':
+          description: bound
+  /ops/track/events:
+    get:
+      operationId: listTrackEvents
+      parameters:
+        - name: waybill_no
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: track list
+  /ops/shipment/detail:
+    get:
+      operationId: shipmentByPackage
+      parameters:
+        - name: package_no
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: shipment
+  /ops/shipment/by-waybill:
+    get:
+      operationId: shipmentByWaybill
+      parameters:
+        - name: waybill_no
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: shipment
+  /shipment/{shipmentNo}/intercept:
+    post:
+      operationId: interceptShipment
+      parameters:
+        - name: shipmentNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: ok
+  /integration/carrier/{carrierCode}/callback:
+    post:
+      operationId: carrierCallback
+      parameters:
+        - name: carrierCode
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [waybill_no, carrier_status, event_time]
+              properties:
+                waybill_no: { type: string }
+                carrier_status: { type: string }
+                event_time: { type: string, format: date-time }
+                location: { type: string }

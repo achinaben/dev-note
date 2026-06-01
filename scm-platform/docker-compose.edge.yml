@@ -1,0 +1,30 @@
+# 边缘栈：Keycloak + OpenResty JWT(RS256 via OMS) + 全栈四服务（与 full 联用）
+# docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml up -d --build
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports: ["8180:8080"]
+    volumes:
+      - ./deploy/keycloak:/opt/keycloak/data/import
+  scm-oms:
+    environment:
+      SPRING_PROFILES_ACTIVE: jdbc,docker,jwt,jwt-jwks
+      SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs
+      SCM_JWT_ISSUER: http://keycloak:8080/realms/scm
+
+  scm-gateway-jwt:
+    build:
+      context: ./deploy/openresty
+      dockerfile: Dockerfile
+    ports: ["8089:8080"]
+    environment:
+      SCM_JWT_ISSUER: http://keycloak:8080/realms/scm
+    depends_on:
+      scm-oms:
+        condition: service_healthy
+      keycloak:
+        condition: service_started

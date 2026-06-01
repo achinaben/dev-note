@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["package_no", "source_order_no", "warehouse_code", "delivery_type", "lines", "receiver"],
+  "properties": {
+    "package_no": { "type": "string", "pattern": "^P" },
+    "source_order_no": { "type": "string" },
+    "warehouse_code": { "type": "string" },
+    "delivery_type": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku_code", "qty"],
+        "properties": {
+          "sku_code": { "type": "string" },
+          "qty": { "type": "string" }
+        }
+      }
+    },
+    "receiver": {
+      "type": "object",
+      "required": ["name", "phone", "province", "city", "district", "address"],
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "province": { "type": "string" },
+        "city": { "type": "string" },
+        "district": { "type": "string" },
+        "address": { "type": "string" }
+      }
+    }
+  }
+}

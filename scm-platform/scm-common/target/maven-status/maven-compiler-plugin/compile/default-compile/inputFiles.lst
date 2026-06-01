@@ -1,0 +1,7 @@
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\event\EventEnvelope.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\event\EventJson.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\idempotency\InMemoryProcessedMessageStore.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\idempotency\ProcessedMessageStore.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\schema\SchemaValidator.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\tenant\OrgIdContext.java
+E:\note\开发-note\scm-platform\scm-common\src\main\java\com\scm\common\web\ApiResponse.java

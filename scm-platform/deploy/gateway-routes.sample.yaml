@@ -1,0 +1,39 @@
+# API 网关路由样例（Nginx / Spring Cloud Gateway / APISIX 均可映射）
+# 对外统一入口示例 :8080
+version: 1
+routes:
+  - id: oms-api
+    path: /api/v1/**
+    upstream: http://127.0.0.1:8081
+    strip_prefix: false
+  - id: wms-api
+    path: /wms/v1/**
+    upstream: http://127.0.0.1:8082
+  - id: tms-api
+    path: /tms/v1/**
+    upstream: http://127.0.0.1:8083
+  - id: erp-api
+    path: /api/v1/integration/**
+    upstream: http://127.0.0.1:8084
+    note: ERP 集成与主数据 API
+  - id: erp-main
+    path: /api/v1/**
+    upstream: http://127.0.0.1:8084
+    priority: low
+headers:
+  pass_through:
+    - Idempotency-Key
+    - X-Org-Id
+    - X-Ops-Token
+    - X-Integration-Key
+mock_sidecars:
+  pay: http://127.0.0.1:8085
+  carrier: http://127.0.0.1:8086
+  inventory: http://127.0.0.1:8087
+security:
+  auth_header: X-Api-Key
+  rate_limit_rps: 100
+  rate_limit_burst: 200
+  see_also:
+    - gateway-auth.sample.yaml
+    - nginx-gateway.sample.conf

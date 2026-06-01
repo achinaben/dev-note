@@ -1,0 +1,4 @@
+erp:
+  base-url: http://scm-erp:8084
+tms:
+  base-url: http://scm-tms:8083

@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: SCM ERP Core API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8084/api/v1
+paths:
+  /credit/check:
+    post:
+      operationId: creditCheck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [partner_id, org_id, currency, order_amount]
+              properties:
+                partner_id: { type: string }
+                org_id: { type: string }
+                currency: { type: string }
+                order_amount: { type: string }
+                include_pending: { type: boolean }
+      responses:
+        '200':
+          description: allowed or not
+  /integration/wms/shipment:
+    post:
+      operationId: postWmsShipment
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [outbound_no, source_system, source_order_no, org_id, wh_code, shipped_at, lines]
+              properties:
+                outbound_no: { type: string }
+                source_system: { type: string, const: WMS }
+                source_order_no: { type: string }
+                org_id: { type: string }
+                wh_code: { type: string }
+                shipped_at: { type: string, format: date-time }
+                lines:
+                  type: array
+                  items:
+                    type: object
+                    required: [material_code, qty]
+                    properties:
+                      material_code: { type: string }
+                      qty: { type: string }
+                      batch_no: { type: string }
+      responses:
+        '200':
+          description: posted or idempotent hit
+  /journal-entries/{jeNo}/post:
+    post:
+      operationId: postJournalEntry
+      parameters:
+        - name: jeNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: posted
+  /materials/{materialCode}:
+    get:
+      operationId: getMaterial
+      parameters:
+        - name: materialCode
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: material detail
+  /fiscal-periods/{periodCode}/close:
+    post:
+      operationId: closeFiscalPeriod
+      parameters:
+        - name: periodCode
+          in: path
+          required: true
+          schema: { type: string, pattern: '^\\d{6}$' }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [org_id]
+              properties:
+                org_id: { type: string }
+      responses:
+        '200':
+          description: closed

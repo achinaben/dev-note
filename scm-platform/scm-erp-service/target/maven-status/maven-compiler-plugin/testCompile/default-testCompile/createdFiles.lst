@@ -1,0 +1,6 @@
+com\scm\erp\api\WmsShipmentPostContractTest.class
+com\scm\erp\integration\OrgIdPostingTest.class
+com\scm\erp\api\MaterialControllerTest.class
+com\scm\erp\api\CreditCheckContractTest.class
+com\scm\erp\integration\WmsShipmentPostingIT.class
+com\scm\erp\fi\PostingEngineTest.class

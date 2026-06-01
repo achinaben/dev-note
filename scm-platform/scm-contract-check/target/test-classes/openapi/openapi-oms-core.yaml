@@ -1,0 +1,185 @@
+openapi: 3.1.0
+info:
+  title: SCM OMS Core API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081/api/v1
+paths:
+  /orders:
+    post:
+      operationId: createOrder
+      summary: 提交订单
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: 建单成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseCreateOrder'
+        '202':
+          description: 异步受理
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '409':
+          description: 幂等重复
+  /orders/{orderNo}:
+    get:
+      operationId: getOrder
+      parameters:
+        - name: orderNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOrderDetail'
+  /orders/{orderNo}/cancel:
+    post:
+      operationId: cancelOrder
+      parameters:
+        - name: orderNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 取消成功
+        '400':
+          $ref: '#/components/responses/BusinessError'
+  /payments/notify/wechat:
+    post:
+      operationId: wechatPayNotify
+      summary: 微信支付回调（内网）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayNotifyRequest'
+      responses:
+        '200':
+          description: 必须返回 SUCCESS 文本或约定 JSON
+  /aftersales:
+    post:
+      operationId: createAftersale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAftersaleRequest'
+      responses:
+        '201':
+          description: 创建成功
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string }
+    Authorization:
+      name: Authorization
+      in: header
+      required: true
+      schema: { type: string }
+  schemas:
+    ApiResponseBase:
+      type: object
+      required: [code, message, request_id]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        request_id: { type: string }
+    CreateOrderRequest:
+      type: object
+      required: [client_token, buyer_id, channel, address_id, lines]
+      properties:
+        client_token: { type: string }
+        buyer_id: { type: string }
+        channel: { type: string }
+        shop_id: { type: string }
+        address_id: { type: string }
+        delivery_type: { type: string, enum: [EXPRESS, PICKUP] }
+        pay_channel: { type: string }
+        lines:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [sku_id, qty, warehouse_id]
+            properties:
+              sku_id: { type: string }
+              qty: { type: string }
+              warehouse_id: { type: string }
+    ApiResponseCreateOrder:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                trade_no: { type: string }
+                orders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      order_no: { type: string }
+                      pay_amount: { type: string }
+                      pay_expire_at: { type: string, format: date-time }
+    PayNotifyRequest:
+      type: object
+      required: [notify_id, out_trade_no, channel_trade_no, amount_minor, sign_verified]
+      properties:
+        notify_id: { type: string }
+        out_trade_no: { type: string }
+        channel_trade_no: { type: string }
+        amount_minor: { type: integer }
+        sign_verified: { type: boolean }
+    CreateAftersaleRequest:
+      type: object
+      required: [order_no, type, lines]
+      properties:
+        order_no: { type: string }
+        type: { type: string, enum: [REFUND_ONLY, RETURN_REFUND, EXCHANGE] }
+        lines:
+          type: array
+          items:
+            type: object
+            required: [order_line_id, qty, reason]
+            properties:
+              order_line_id: { type: integer }
+              qty: { type: string }
+              reason: { type: string }
+    ApiResponseOrderDetail:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                order_no: { type: string }
+                status: { type: string }
+                status_rank: { type: integer }
+                packages: { type: array, items: { type: object } }
+  responses:
+    BusinessError:
+      description: 业务错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiResponseBase'

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["from_warehouse_code", "receiver", "packages"],
+  "properties": {
+    "from_warehouse_code": { "type": "string" },
+    "receiver": { "type": "object" },
+    "packages": { "type": "array", "minItems": 1 },
+    "temp_zone": { "type": "string" }
+  }
+}

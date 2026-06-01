@@ -1,0 +1,2 @@
+oms:
+  notify-url: http://scm-oms:8081/api/v1/payments/notify/wechat

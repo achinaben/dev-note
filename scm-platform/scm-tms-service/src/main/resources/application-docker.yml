@@ -1,0 +1,4 @@
+oms:
+  base-url: http://scm-oms:8081
+carrier:
+  base-url: http://scm-mock-carrier:8086

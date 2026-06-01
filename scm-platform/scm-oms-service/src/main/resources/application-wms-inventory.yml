@@ -1,0 +1,7 @@
+scm:
+
+  inventory:
+
+    provider: wms
+
+    remote-enabled: true

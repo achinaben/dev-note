@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.scm.wms.outbound.WmsOutboundStrictJdbcIT" time="0.006" tests="1" errors="0" skipped="1" failures="0">
+  <properties/>
+  <testcase name="strictFlowPickCheckHandover" classname="com.scm.wms.outbound.WmsOutboundStrictJdbcIT" time="0.0">
+    <skipped message="disabledWithoutDocker is true and Docker is not available"/>
+    <system-out><![CDATA[13:47:42.739 [main] WARN org.testcontainers.dockerclient.DockerClientProviderStrategy -- DOCKER_HOST tcp://192.168.86.153:2375 is not listening
+]]></system-out>
+  </testcase>
+</testsuite>

@@ -1,0 +1,4 @@
+# ERP 容器内服务发现
+scm:
+  integration:
+    erp-shipment: http

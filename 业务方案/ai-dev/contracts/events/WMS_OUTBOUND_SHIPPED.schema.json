@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scm.local/schemas/events/WMS_OUTBOUND_SHIPPED.v1.json",
+  "title": "WMS_OUTBOUND_SHIPPED data",
+  "type": "object",
+  "required": ["outbound_no", "package_no", "source_order_no", "warehouse_code", "shipped_at", "lines"],
+  "properties": {
+    "outbound_no": { "type": "string" },
+    "package_no": { "type": "string" },
+    "source_order_no": { "type": "string" },
+    "warehouse_code": { "type": "string" },
+    "shipped_at": { "type": "string", "format": "date-time" },
+    "waybill_no": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku_code", "qty"],
+        "properties": {
+          "sku_code": { "type": "string" },
+          "qty": { "type": "string" },
+          "batch_no": { "type": "string" },
+          "location_code": { "type": "string" }
+        }
+      }
+    },
+    "weight_kg": { "type": "string" }
+  }
+}

@@ -1,0 +1,2 @@
+tms:
+  callback-base-url: http://scm-tms:8083/tms/v1/integration/carrier

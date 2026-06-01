@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scm.local/schemas/events/FULFILLMENT_RELEASED.v1.json",
+  "type": "object",
+  "required": ["package_no", "order_no", "warehouse_code", "lines"],
+  "properties": {
+    "package_no": { "type": "string" },
+    "order_no": { "type": "string" },
+    "warehouse_code": { "type": "string" },
+    "receiver_id": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku_id", "qty"],
+        "properties": {
+          "sku_id": { "type": "string" },
+          "qty": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["client_token", "order_no", "warehouse_id", "lines"],
+  "properties": {
+    "client_token": { "type": "string" },
+    "order_no": { "type": "string" },
+    "warehouse_id": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sku_id", "qty"],
+        "properties": {
+          "sku_id": { "type": "string" },
+          "qty": { "type": "string" }
+        }
+      }
+    }
+  }
+}

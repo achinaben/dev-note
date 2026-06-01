@@ -1,0 +1,9 @@
+wms:
+  base-url: http://scm-wms:8082
+tms:
+  base-url: http://scm-tms:8083
+erp:
+  base-url: http://scm-erp:8084
+scm:
+  inventory:
+    wms-base-url: http://scm-wms:8082

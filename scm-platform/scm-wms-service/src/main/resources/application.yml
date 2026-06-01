@@ -1,0 +1,42 @@
+server:
+
+  port: 8082
+
+spring:
+
+  application:
+
+    name: scm-wms-service
+
+  flyway:
+
+    enabled: false
+
+scm:
+
+  storage: memory
+
+  wms:
+
+    outbound:
+
+      relaxed-handover: true
+
+  event:
+
+    transport: memory
+
+    producer: wms
+
+  integration:
+
+    erp-shipment: both
+
+  ops:
+
+    enabled: true
+
+erp:
+
+  base-url: http://localhost:8084
+

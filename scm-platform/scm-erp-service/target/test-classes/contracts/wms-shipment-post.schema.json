@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["outbound_no", "source_system", "source_order_no", "org_id", "wh_code", "shipped_at", "lines"],
+  "properties": {
+    "outbound_no": { "type": "string" },
+    "source_system": { "type": "string", "const": "WMS" },
+    "source_order_no": { "type": "string" },
+    "org_id": { "type": "string" },
+    "wh_code": { "type": "string" },
+    "shipped_at": { "type": "string" },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["material_code", "qty"],
+        "properties": {
+          "material_code": { "type": "string" },
+          "qty": { "type": "string" }
+        }
+      }
+    }
+  }
+}

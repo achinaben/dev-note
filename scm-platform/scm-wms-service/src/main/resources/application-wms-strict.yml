@@ -1,0 +1,7 @@
+scm:
+
+  wms:
+
+    outbound:
+
+      relaxed-handover: false

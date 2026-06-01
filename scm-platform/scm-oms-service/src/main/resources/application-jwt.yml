@@ -1,0 +1,7 @@
+scm:
+  security:
+    jwt:
+      enabled: true
+      verify-signature: false
+      issuer: http://localhost:8180/realms/scm
+      required-scope: oms.write

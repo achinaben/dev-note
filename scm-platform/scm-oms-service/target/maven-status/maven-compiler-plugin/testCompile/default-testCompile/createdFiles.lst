@@ -1,0 +1,17 @@
+com\scm\oms\inventory\InventoryTestSupport.class
+com\scm\oms\payment\PaymentNotifyIdempotentTest.class
+com\scm\oms\outbox\OutboxPollerIT.class
+com\scm\oms\event\WmsOutboundShippedHandlerTest.class
+com\scm\oms\api\OpsApiKeyTest.class
+com\scm\oms\api\TmsTrackRankTest.class
+com\scm\oms\integration\StubWmsGateway.class
+com\scm\oms\order\OmsOrderJdbcIT.class
+com\scm\oms\api\TmsTrackContractTest.class
+com\scm\oms\inventory\InventoryRemoteWireMockTest.class
+com\scm\oms\api\JwtScopeAccessTest.class
+com\scm\oms\order\OrderStateMachineTest.class
+com\scm\oms\tenant\OrgIdPassthroughTest.class
+com\scm\oms\api\CreateOrderContractTest.class
+com\scm\oms\inventory\InventoryWmsProviderTest.class
+com\scm\oms\order\CreateOrderIdempotentTest.class
+com\scm\oms\api\OpsDisabledTest.class

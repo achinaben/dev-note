@@ -1,0 +1,94 @@
+# 四服务 + mock 侧车全栈（需先 mvn install -DskipTests 构建 JAR）
+services:
+  scm-oms:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-oms-service
+    image: scm-oms:local
+    ports: ["8081:8081"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - scm-wms
+      - scm-tms
+      - scm-erp
+      - scm-mock-inventory
+
+  scm-wms:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-wms-service
+    image: scm-wms:local
+    ports: ["8082:8082"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - scm-erp
+      - scm-tms
+
+  scm-tms:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-tms-service
+    image: scm-tms:local
+    ports: ["8083:8083"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - scm-mock-carrier
+
+  scm-erp:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-erp-service
+    image: scm-erp:local
+    ports: ["8084:8084"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  scm-mock-pay:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-mock-pay
+    image: scm-mock-pay:local
+    ports: ["8085:8085"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - scm-oms
+
+  scm-mock-carrier:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-mock-carrier
+    image: scm-mock-carrier:local
+    ports: ["8086:8086"]
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - scm-tms
+
+  scm-mock-inventory:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        MODULE: scm-mock-inventory
+    image: scm-mock-inventory:local
+    ports: ["8087:8087"]
+
+networks:
+  default:
+    name: scm-stack

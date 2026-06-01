@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: SCM Inventory API (OMS 内置或独立服务)
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081/inventory/v1
+paths:
+  /reserve:
+    post:
+      operationId: reserve
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [client_token, order_no, warehouse_id, lines]
+              properties:
+                client_token: { type: string }
+                order_no: { type: string }
+                warehouse_id: { type: string }
+                lines:
+                  type: array
+                  items:
+                    type: object
+                    required: [sku_id, qty]
+                    properties:
+                      sku_id: { type: string }
+                      qty: { type: string }
+      responses:
+        '200':
+          description: reserved
+  /confirm:
+    post:
+      operationId: confirm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_no, reserve_id]
+              properties:
+                order_no: { type: string }
+                reserve_id: { type: string }
+  /release:
+    post:
+      operationId: release
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_no, reason]
+              properties:
+                order_no: { type: string }
+                reason: { type: string, enum: [TIMEOUT, USER_CANCEL, INTERCEPT] }

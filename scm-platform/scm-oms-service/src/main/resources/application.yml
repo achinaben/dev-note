@@ -1,0 +1,70 @@
+server:
+
+  port: 8081
+
+spring:
+
+  application:
+
+    name: scm-oms-service
+
+  flyway:
+
+    enabled: false
+
+scm:
+
+  storage: memory
+
+  fulfillment:
+
+    auto-tms-on-ship: true
+
+    use-recommended-carrier: true
+
+  event:
+
+    transport: memory
+
+    producer: oms
+
+  outbox:
+
+    relay-delay-ms: 300
+
+  ops:
+
+    enabled: true
+
+  security:
+
+    jwt:
+
+      enabled: false
+
+      issuer: http://localhost:8180/realms/scm
+
+      required-scope: oms.write
+      verify-signature: false
+      jwks-uri: http://localhost:8180/realms/scm/protocol/openid-connect/certs
+
+  inventory:
+
+    provider: mock
+
+    remote-enabled: true
+
+    wms-base-url: http://localhost:8082
+
+wms:
+
+  base-url: http://localhost:8082
+
+tms:
+
+  base-url: http://localhost:8083
+
+erp:
+
+  base-url: http://localhost:8084
+

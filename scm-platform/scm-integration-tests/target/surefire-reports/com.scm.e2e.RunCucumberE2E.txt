@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.scm.e2e.RunCucumberE2E
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.638 s -- in com.scm.e2e.RunCucumberE2E

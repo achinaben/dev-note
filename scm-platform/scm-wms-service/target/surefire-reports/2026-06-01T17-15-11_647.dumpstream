@@ -1,0 +1,5 @@
+# Created at 2026-06-01T17:15:31.676
+Boot Manifest-JAR contains absolute paths in classpath 'E:\note\开发-note\scm-platform\scm-wms-service\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
