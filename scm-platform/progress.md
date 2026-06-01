@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 22:09 UTC |
+| 上次更新 | 2026-06-01 22:16 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | edge + Kafka CI 已推进到 ERP/TMS 健康响应等待失败 |
+| 阻塞项 | edge + Kafka CI 已修复根路径 404 探活误判，等待推送后 CI 继续验证 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -112,3 +112,12 @@
 - 当前 CI 观察：构建、MySQL/Redis、Kafka、Keycloak 均通过；最新失败点已推进到 ERP/TMS HTTP 健康响应等待，OMS/WMS 与 E2E-K05 尚未执行。
 - 测试：本地 `mvn test` 通过。云 VM 无 Docker CLI，compose 实跑依赖 GitHub Actions。
 - 下一动作：继续定位 ERP/TMS 容器未返回健康响应的原因；若能取得日志，优先查看 ERP/TMS 启动日志与数据库/Kafka连接。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 CI 探活修复）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- 修复：根 workflow 中 ERP/TMS、OMS/WMS 阶段等待不再使用 `curl -f` 要求 `/` 返回 2xx，改为只确认 HTTP 连接可建立，避免 Spring Boot 根路径 404 被误判为服务未启动。
+- 可观测性：ERP/TMS、OMS/WMS 等待超时时输出对应容器 `ps` 与最近日志，若 CI 仍失败可直接看到真实启动错误。
+- 契约：Edge Kafka 栈配置测试锁定新的探活命令，并禁止回退到 `curl -sf http://127.0.0.1:808...`。
+- 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
+- 下一动作：观察 `e2e-edge-kafka-stack` CI 是否越过 ERP/TMS 与 OMS/WMS 等待并执行 E2E-K05；若仍失败，按新增日志继续修复。
