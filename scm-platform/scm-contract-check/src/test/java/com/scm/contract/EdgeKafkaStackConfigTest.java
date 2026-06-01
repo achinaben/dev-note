@@ -22,6 +22,7 @@ class EdgeKafkaStackConfigTest {
         String rootWorkflow = read(root.getParent(), ".github/workflows/scm-platform-edge-kafka.yml");
         String kafkaOverlay = read(root, "docker-compose.kafka-overlay.yml");
         String compose = read(root, "docker-compose.yml");
+        String parentPom = read(root, "pom.xml");
         String serviceDockerfile = read(root, "deploy/Dockerfile.service");
         String commonSpringImports = read(root,
                 "scm-common-spring/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports");
@@ -45,6 +46,7 @@ class EdgeKafkaStackConfigTest {
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
         assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
+        assertServiceModulesBuildExecutableJars(parentPom);
         assertJdbcStorageIsAutoConfigured(commonSpringImports, jdbcStorageConfiguration,
                 erpApplication, omsApplication, wmsApplication, tmsApplication);
 
@@ -89,6 +91,11 @@ class EdgeKafkaStackConfigTest {
     private static void assertServiceImagesUseCiFriendlyJvmDefaults(String serviceDockerfile) {
         assertTrue(serviceDockerfile.contains("ENV JAVA_OPTS=\"-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m\""));
         assertFalse(serviceDockerfile.contains("-Xmx384m"));
+    }
+
+    private static void assertServiceModulesBuildExecutableJars(String parentPom) {
+        assertTrue(parentPom.contains("<artifactId>spring-boot-maven-plugin</artifactId>"));
+        assertTrue(parentPom.contains("<goal>repackage</goal>"));
     }
 
     private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports, String jdbcStorageConfiguration,
