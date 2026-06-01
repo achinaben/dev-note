@@ -29,8 +29,8 @@ bash scripts/sync-openapi-contracts.sh && mvn -pl scm-contract-check test
 
 ## 网关 JWT（OpenResty）
 
-- `deploy/openresty/jwt-auth.lua` — exp / iss / scope（含 Keycloak realm roles）
-- `auth_request` → OMS `GET /internal/v1/jwt/check`（**RS256**，需 OMS `jwt,jwt-jwks`）
+- `deploy/openresty/jwt-auth.lua` — lua-resty-openidc 直连 JWKS 验 RS256，并校验 exp / iss / scope（含 Keycloak realm roles）
+- OpenResty 环境变量：`SCM_JWT_ISSUER`、`SCM_JWT_JWKS_URI`
 - 建单路由 **必须** 带 Bearer（`require_bearer`）
 - E2E-GW03：错误 scope → 403；E2E-GW04：无 Bearer → 401
 
@@ -39,7 +39,7 @@ bash scripts/sync-openapi-contracts.sh && mvn -pl scm-contract-check test
 | 组合 | 内容 |
 |------|------|
 | `docker-compose.full.yml` | MySQL + 四服务 + mock-pay/carrier/inventory |
-| `docker-compose.edge.yml` | + Keycloak + OpenResty :8089 + OMS jwt-jwks |
+| `docker-compose.edge.yml` | + Keycloak + OpenResty :8089 直连 JWKS |
 
 CI：`docker-stack-smoke`、`e2e-stack-smoke`（`@smoke and @e2e`）。
 
@@ -61,6 +61,7 @@ mvn -pl scm-integration-tests -Pe2e-kafka test
 
 ## 下一步（W37）
 
+
 1. OpenResty 内嵌 lua-resty-openidc 直连 JWKS
 2. 全栈 E2E-06（售后拦截）
 3. edge + kafka 一键脚本与 CI job
@@ -74,3 +75,4 @@ mvn -pl scm-integration-tests -Pe2e-kafka test
 - **E2E**：服务就绪后 `mvn -pl scm-integration-tests -Pe2e test`，或一键 `bash scripts/ci-e2e.sh`（含单测+起服+E2E+停服）。
 - **Docker 可选**：本仓库 Kafka/MySQL/全栈 compose 需宿主机 Docker；云 VM 若未装 Docker，仅用 `start-all.sh` 即可验证核心 B2C API。
 - **TMS 测试依赖**：`scm-tms-service` 仅应声明 `wiremock-jetty12`（勿与 `wiremock` 主构件同时引入，否则 Jetty 11/12 混用导致 WireMock 启动 ICCE）。
+
