@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EdgeKafkaStackConfigTest {
@@ -18,6 +19,7 @@ class EdgeKafkaStackConfigTest {
         String stopScript = read(root, "scripts/stop-edge-kafka.sh");
         String runScript = read(root, "scripts/run-e2e-edge-kafka.sh");
         String workflow = read(root, ".github/workflows/scm-ci.yml");
+        String rootWorkflow = read(root.getParent(), ".github/workflows/scm-platform-edge-kafka.yml");
         String compose = read(root, "docker-compose.yml");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
@@ -33,6 +35,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
         assertTrue(workflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
         assertTrue(workflow.contains("bash scripts/stop-edge-kafka.sh"));
+        assertRootWorkflowTriggersScmWaveAndRunsK05(rootWorkflow);
     }
 
     private static void assertUsesEdgeKafkaComposeChain(String script) {
@@ -53,6 +56,17 @@ class EdgeKafkaStackConfigTest {
     private static void assertEdgeStackAcceptsHostIssuedKeycloakTokens(String edgeCompose) {
         assertTrue(edgeCompose.contains("SCM_JWT_ISSUER: http://localhost:8180/realms/scm"));
         assertTrue(edgeCompose.contains("SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs"));
+    }
+
+    private static void assertRootWorkflowTriggersScmWaveAndRunsK05(String rootWorkflow) {
+        assertTrue(rootWorkflow.contains("branches: [cursor/scm-wave, main, master]"));
+        assertTrue(rootWorkflow.contains("working-directory: scm-platform"));
+        assertTrue(rootWorkflow.contains("e2e-edge-kafka-stack:"));
+        assertTrue(rootWorkflow.contains("bash scripts/start-edge-kafka.sh"));
+        assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
+        assertTrue(rootWorkflow.contains("bash scripts/stop-edge-kafka.sh"));
+        assertTrue(rootWorkflow.contains("/dev/tcp/127.0.0.1/$p"));
+        assertFalse(rootWorkflow.contains("continue-on-error: true"));
     }
 
     private static String read(Path root, String path) throws Exception {
