@@ -38,10 +38,16 @@ jobs:
       - name: Validate edge + Kafka compose config
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml config --quiet
 
+      - name: Build OpenResty gateway image
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml build scm-gateway-jwt
+
+      - name: Build SCM service images
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml build scm-erp scm-oms scm-wms scm-tms scm-mock-pay scm-mock-carrier scm-mock-inventory
+
       - name: Start edge + Kafka stack
         run: |
           chmod +x scripts/*.sh
-          bash scripts/start-edge-kafka.sh
+          SCM_COMPOSE_SKIP_BUILD=1 bash scripts/start-edge-kafka.sh
 
       - name: Wait for edge + Kafka ports
         run: |

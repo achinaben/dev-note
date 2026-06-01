@@ -29,6 +29,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(runScript.contains("-Pe2e-kafka"));
         assertTrue(runScript.contains("@E2E-K05"));
         assertTrue(runScript.contains("SCM_E2E_OMS_AUTH"));
+        assertTrue(startScript.contains("SCM_COMPOSE_SKIP_BUILD"));
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
@@ -72,6 +73,10 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("docker compose version"));
         assertTrue(rootWorkflow.contains("Validate edge + Kafka compose config"));
         assertTrue(rootWorkflow.contains("config --quiet"));
+        assertTrue(rootWorkflow.contains("Build OpenResty gateway image"));
+        assertTrue(rootWorkflow.contains("build scm-gateway-jwt"));
+        assertTrue(rootWorkflow.contains("Build SCM service images"));
+        assertTrue(rootWorkflow.contains("SCM_COMPOSE_SKIP_BUILD=1 bash scripts/start-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/start-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/stop-edge-kafka.sh"));
