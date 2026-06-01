@@ -53,10 +53,17 @@ jobs:
       - name: Start Keycloak infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d keycloak
 
-      - name: Start edge + Kafka services
-        run: |
-          chmod +x scripts/*.sh
-          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-erp scm-tms scm-oms scm-wms scm-mock-pay scm-mock-carrier scm-mock-inventory scm-gateway-jwt
+      - name: Start ERP and TMS services
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-erp scm-tms
+
+      - name: Start OMS and WMS services
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-oms scm-wms
+
+      - name: Start mock services
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-mock-pay scm-mock-carrier scm-mock-inventory
+
+      - name: Start JWT gateway service
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-gateway-jwt
 
       - name: Wait for edge + Kafka ports
         run: |

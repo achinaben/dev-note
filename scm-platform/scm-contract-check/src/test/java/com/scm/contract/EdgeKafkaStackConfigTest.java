@@ -91,8 +91,14 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("up -d kafka"));
         assertTrue(rootWorkflow.contains("Start Keycloak infrastructure"));
         assertTrue(rootWorkflow.contains("up -d keycloak"));
-        assertTrue(rootWorkflow.contains("Start edge + Kafka services"));
-        assertTrue(rootWorkflow.contains("up -d --no-build scm-erp scm-tms scm-oms scm-wms scm-mock-pay scm-mock-carrier scm-mock-inventory scm-gateway-jwt"));
+        assertTrue(rootWorkflow.contains("Start ERP and TMS services"));
+        assertTrue(rootWorkflow.contains("up -d --no-build scm-erp scm-tms"));
+        assertTrue(rootWorkflow.contains("Start OMS and WMS services"));
+        assertTrue(rootWorkflow.contains("up -d --no-build scm-oms scm-wms"));
+        assertTrue(rootWorkflow.contains("Start mock services"));
+        assertTrue(rootWorkflow.contains("up -d --no-build scm-mock-pay scm-mock-carrier scm-mock-inventory"));
+        assertTrue(rootWorkflow.contains("Start JWT gateway service"));
+        assertTrue(rootWorkflow.contains("up -d --no-build scm-gateway-jwt"));
         assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/stop-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("/dev/tcp/127.0.0.1/$p"));
