@@ -1,14 +1,20 @@
 # SCM 波次推进：运行历史与 Git 仓库分支
 
-> 说明 **Cursor Automations 运行历史** 与 **GitHub 分支**（`main`、`cursor/agent-*`）的关系，以及如何合并到 `main`。
+> **本项目只采用一种 Git 模式：远程开发的「个人工作分支」。** 多个 Run 只提交到 **`cursor/scm-wave`**，波次结束再由人合并到 `main`。**禁止**「一个 Run 一个 `cursor/agent-*` 分支」。
 
 ---
 
-## 1. 一句话结论
+## 1. 一句话结论（唯一模式）
 
-- **运行历史**：每分钟 Automation **有没有跑、跑得怎样**（成功 / 失败 / 进行中）。
-- **推荐 Git 模型**：像以往一样——从 `main` 拉出 **一条自己的工作分支**，多个成功 Run **只往这一条分支提交**，波次结束后再 **手动合并到 `main`**（见第 2 节）。
-- **当前默认（未改 Cloud 配置时）**：跑成功且 push 时，往往在 **新的 `cursor/agent-*`** 上提交，**不会自动进 `main`**；上百条分支时需按第 5.4 节收口。
+| 概念 | 约定 |
+|------|------|
+| **main** | 主线；Automation **不**直接 push、不自动 merge |
+| **cursor/scm-wave** | 云端的「你的分支」；从 `main` 拉出，**全波次共用** |
+| **Run** | 多轮开发；每轮成功 → **同一分支** 上 commit + push |
+| **运行历史** | 只看跑没跑成功；**不等于**新建分支 |
+| **你收尾** | 波次结束 → **1 次** PR 或 merge：`cursor/scm-wave` → `main` |
+
+配置与验收：第 **2.3、2.6** 节。历史 `cursor/agent-*` 仅作清理参考：附录 A。
 
 ---
 
@@ -520,69 +526,34 @@ git push origin --delete cursor/agent-a6c1
 
 ---
 
-## 13. 推荐工作流（每日）
-
-**已配置固定工作分支（第 2 节）时：**
+## 13. 推荐工作流（每日，仅个人分支模式）
 
 ```
-1. 看 Run History：Succeeded / Failed
-2. 看 GitHub 仅一条工作分支 cursor/scm-wave 是否在长高（不是数 agent 分支）
-3. 本机需要时：git fetch && git checkout cursor/scm-wave && git pull
-4. 波次结束：开 1 个 PR（cursor/scm-wave → main）或本地 merge 后 push
-5. 合并后：本机 main 上 git pull；可选删除或保留工作分支供下一波次
+1. Run History：看 Succeeded / Failed（不数分支条数）
+2. GitHub：只盯 cursor/scm-wave 是否在长高
+3. 本机协作：git fetch && git checkout cursor/scm-wave && git pull
+4. 波次结束：1 个 PR（cursor/scm-wave → main）或本地 merge
+5. 合并后：git checkout main && git pull
 ```
 
-**尚未改配置、仍是一 Run 一分支时：**
-
-```
-1. 看 Run History
-2. 看新的 cursor/agent-* 有几条
-3. 选 1 条最相关的 → PR → Merge 到 main（或 6.4 批量收口）
-4. 本机 git pull；删除已合并的 agent 分支
-5. 尽快按第 2 节改成固定工作分支，避免再堆分支
-```
+若出现新的 `cursor/agent-*` → **配置错误**，按 2.6 节改仪表盘，不要用「每 Run 一分支」流程。
 
 ---
 
-## 14. 关系总图
-
-**推荐（固定工作分支）：**
+## 14. 关系总图（唯一模式）
 
 ```
 Automations 每分钟 → Run History（多轮）
-                    → 同一分支 cursor/scm-wave 上多次 commit/push
-                    → 你：波次结束 PR/merge 一次 → main → 本机 pull
-```
-
-**默认（未改配置，不推荐长期使用）：**
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  Cursor Automations: SCM 波次推进 (Active, * * * * *)   │
-└───────────────────────────┬─────────────────────────────┘
-                            │ 每分钟
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│  Run History: Scheduled / Succeeded / Failed / Running   │
-└───────────────────────────┬─────────────────────────────┘
-                            │ Succeeded + push
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│  GitHub: cursor/agent-xxxx  (ahead of main)              │
-│  + 可能 progress.md / AGENTS.md / 代码改动               │
-└───────────────────────────┬─────────────────────────────┘
-                            │ 你操作：PR 或 git merge
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│  GitHub: main  ← 最终主线                                │
-└───────────────────────────┬─────────────────────────────┘
-                            │ git pull
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│  本机 E:\note\开发-note (main)                           │
-└─────────────────────────────────────────────────────────┘
+                    → cursor/scm-wave 上多次 commit/push
+                    → 你：波次结束 1 次 PR/merge → main → 本机 pull
 ```
 
 ---
 
-*文档版本：2026-06-02（含第 2 节个人分支模型、批量收口、自动进 main），适用于 achinaben/dev-note + SCM 波次推进每分钟 Automation。*
+## 附录 A：历史「一 Run 一分支」（已废弃，仅清理用）
+
+曾用 Cloud 默认时，每 Run 可能产生 `cursor/agent-xxxx`。**本项目不再采用。** 若远程仍有多条 agent 分支：按 **6.4 方式 D** 收口一次后删除；并立即按 **2.6** 固定 `cursor/scm-wave` + **Work on current branch**。
+
+---
+
+*文档版本：2026-06-02（唯一模式：cursor/scm-wave 个人分支；废弃一 Run 一分支），适用于 achinaben/dev-note + SCM 波次推进。*
