@@ -8,7 +8,7 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 20:34 UTC |
+| 上次更新 | 2026-06-01 20:43 UTC |
 | 上次 mvn test | `mvn test` 通过 |
 | 阻塞项 | 无 |
 
@@ -19,6 +19,7 @@
 - [x] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
 - [x] 全栈 E2E-06（售后拦截）
 - [x] Kafka profile 纳入 compose（docker-compose.kafka-overlay.yml + application-docker-kafka）
+- [x] edge + Kafka 一键脚本与 CI job
 - [ ] E2E-K05 在 compose 栈上 CI 跑通
 
 ## W36 清单
@@ -71,3 +72,11 @@
 - 修正：OpenResty JWT 契约测试同时接受 luarocks 与 OpenResty opm 安装 lua-resty-openidc，匹配当前 Dockerfile 实现。
 - 测试：`mvn -pl scm-oms-service -Dtest=TmsFulfillmentClientTest test`、`mvn -pl scm-integration-tests -Pe2e test -Dcucumber.filter.tags='@E2E-06'`、`mvn -pl scm-contract-check test`、`mvn test` 均通过。
 - 下一动作：edge + kafka 一键脚本与 CI job，继续推进 E2E-K05 在 compose 栈上跑通。
+
+### 2026-06-01 Cloud Automation Run（edge + Kafka CI）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；本地阻塞拉取的 target 产物已还原后继续。
+- 完成：新增 edge + Kafka 组合 overlay，保留 OMS 的 JWT/JWKS 与 Kafka profile；新增 Linux/PowerShell 一键启动、停止与 E2E-K05 运行脚本。
+- CI：新增 `e2e-edge-kafka-stack` job，启动 edge + Kafka compose 栈后只跑 E2E-K05；新增契约测试固定脚本、compose 链与 workflow 入口。
+- 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI，compose 实跑需由 GitHub CI job 验证。
+- 下一动作：观察并修复 `e2e-edge-kafka-stack` 的 compose 栈 E2E-K05 CI 运行结果。

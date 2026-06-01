@@ -4,7 +4,7 @@
 
 **W36 已完成**：OpenResty RS256（auth_request→OMS）、全栈 mock、边缘 compose、网关路由契约测试、覆盖率 50%、CI e2e-stack-smoke。
 
-**W37 进行中**：OpenResty 已内嵌 lua-resty-openidc 直连 JWKS；全栈 E2E-06 已跑通；下一项推进 edge + kafka 一键脚本与 CI job。
+**W37 进行中**：OpenResty 已内嵌 lua-resty-openidc 直连 JWKS；全栈 E2E-06 已跑通；edge + kafka 一键脚本与 CI job 已补，下一项观察并修复 E2E-K05 compose CI。
 
 ## 一键本地联调（Windows）
 
@@ -72,7 +72,8 @@ mvn -pl scm-integration-tests -Pe2e-kafka test
 
 1. OpenResty 内嵌 lua-resty-openidc 直连 JWKS
 2. 全栈 E2E-06（售后拦截）
-3. edge + kafka 一键脚本与 CI job（下一轮）
+3. edge + kafka 一键脚本与 CI job
+4. E2E-K05 compose CI 运行结果观察与修复（下一轮）
 
 ## Cursor Cloud specific instructions
 
