@@ -25,6 +25,8 @@ class EdgeKafkaStackConfigTest {
         String serviceDockerfile = read(root, "deploy/Dockerfile.service");
         String commonSpringImports = read(root,
                 "scm-common-spring/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports");
+        String jdbcStorageConfiguration = read(root,
+                "scm-common-spring/src/main/java/com/scm/spring/storage/EnableJdbcStorageConfiguration.java");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
@@ -39,7 +41,7 @@ class EdgeKafkaStackConfigTest {
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
         assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
-        assertJdbcStorageIsAutoConfigured(commonSpringImports);
+        assertJdbcStorageIsAutoConfigured(commonSpringImports, jdbcStorageConfiguration);
 
         assertTrue(workflow.contains("e2e-edge-kafka-stack:"));
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
@@ -84,8 +86,12 @@ class EdgeKafkaStackConfigTest {
         assertFalse(serviceDockerfile.contains("-Xmx384m"));
     }
 
-    private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports) {
+    private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports, String jdbcStorageConfiguration) {
         assertTrue(commonSpringImports.contains("com.scm.spring.storage.EnableJdbcStorageConfiguration"));
+        assertTrue(jdbcStorageConfiguration.contains("DataSource scmDataSource"));
+        assertTrue(jdbcStorageConfiguration.contains("properties.initializeDataSourceBuilder().build()"));
+        assertTrue(jdbcStorageConfiguration.contains("Flyway scmFlyway"));
+        assertTrue(jdbcStorageConfiguration.contains("FlywayMigrationInitializer scmFlywayMigrationInitializer"));
     }
 
     private static void assertRootWorkflowTriggersScmWaveAndRunsK05(String rootWorkflow) {
