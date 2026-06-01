@@ -67,10 +67,12 @@ jobs:
       - name: Wait for ERP and TMS ports
         run: |
           for _ in $(seq 1 80); do
-            curl -sf http://127.0.0.1:8083/ >/dev/null && \
-            curl -sf http://127.0.0.1:8084/ >/dev/null && exit 0
+            curl -s --connect-timeout 2 http://127.0.0.1:8083/ >/dev/null && \
+            curl -s --connect-timeout 2 http://127.0.0.1:8084/ >/dev/null && exit 0
             sleep 3
           done
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps scm-erp scm-tms
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 scm-erp scm-tms
           exit 1
 
       - name: Start OMS and WMS services
@@ -79,10 +81,12 @@ jobs:
       - name: Wait for OMS and WMS ports
         run: |
           for _ in $(seq 1 80); do
-            curl -sf http://127.0.0.1:8081/ >/dev/null && \
-            curl -sf http://127.0.0.1:8082/ >/dev/null && exit 0
+            curl -s --connect-timeout 2 http://127.0.0.1:8081/ >/dev/null && \
+            curl -s --connect-timeout 2 http://127.0.0.1:8082/ >/dev/null && exit 0
             sleep 3
           done
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml ps scm-oms scm-wms
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 scm-oms scm-wms
           exit 1
 
       - name: Start mock services
