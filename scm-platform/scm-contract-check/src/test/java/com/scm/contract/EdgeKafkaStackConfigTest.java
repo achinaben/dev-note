@@ -17,12 +17,14 @@ class EdgeKafkaStackConfigTest {
         String stopScript = read(root, "scripts/stop-edge-kafka.sh");
         String runScript = read(root, "scripts/run-e2e-edge-kafka.sh");
         String workflow = read(root, ".github/workflows/scm-ci.yml");
+        String compose = read(root, "docker-compose.yml");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertUsesEdgeKafkaComposeChain(startScript);
         assertUsesEdgeKafkaComposeChain(stopScript);
         assertTrue(runScript.contains("-Pe2e-kafka"));
         assertTrue(runScript.contains("@E2E-K05"));
+        assertKafkaHasInternalAndExternalListeners(compose);
 
         assertTrue(workflow.contains("e2e-edge-kafka-stack:"));
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
@@ -36,6 +38,13 @@ class EdgeKafkaStackConfigTest {
         assertTrue(script.contains("docker-compose.edge.yml"));
         assertTrue(script.contains("docker-compose.kafka-overlay.yml"));
         assertTrue(script.contains("docker-compose.edge-kafka.yml"));
+    }
+
+    private static void assertKafkaHasInternalAndExternalListeners(String compose) {
+        assertTrue(compose.contains("9092:29092"));
+        assertTrue(compose.contains("PLAINTEXT://kafka:9092"));
+        assertTrue(compose.contains("EXTERNAL://localhost:9092"));
+        assertTrue(compose.contains("KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
     }
 
     private static String read(Path root, String path) throws Exception {

@@ -8,7 +8,7 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 20:43 UTC |
+| 上次更新 | 2026-06-01 20:51 UTC |
 | 上次 mvn test | `mvn test` 通过 |
 | 阻塞项 | 无 |
 
@@ -80,3 +80,11 @@
 - CI：新增 `e2e-edge-kafka-stack` job，启动 edge + Kafka compose 栈后只跑 E2E-K05；新增契约测试固定脚本、compose 链与 workflow 入口。
 - 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI，compose 实跑需由 GitHub CI job 验证。
 - 下一动作：观察并修复 `e2e-edge-kafka-stack` 的 compose 栈 E2E-K05 CI 运行结果。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 compose CI 修复）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；本轮启动时 target 生成物导致 pull rebase 被拒，已确认无业务源码脏文件并还原生成物后继续。
+- 修复：Kafka compose 改为双监听，容器内服务通过 `kafka:9092` 获取 broker 元数据，宿主机与 CI 仍通过 `localhost:9092` 访问，避免 OMS/WMS/ERP 在 Docker 内收到 `localhost` 导致 Kafka 事件链路断开。
+- 契约：Edge Kafka 栈配置测试补充 Kafka 内外监听断言，防止回退为单一 localhost advertised listener。
+- 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI，无法本地起 compose 栈。
+- 下一动作：观察 `e2e-edge-kafka-stack` 推送后的 CI 结果；若仍失败，按 CI 日志继续修复。
