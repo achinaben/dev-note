@@ -68,6 +68,10 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("branches: [cursor/scm-wave, main, master]"));
         assertTrue(rootWorkflow.contains("working-directory: scm-platform"));
         assertTrue(rootWorkflow.contains("e2e-edge-kafka-stack:"));
+        assertTrue(rootWorkflow.contains("Check Docker Compose availability"));
+        assertTrue(rootWorkflow.contains("docker compose version"));
+        assertTrue(rootWorkflow.contains("Validate edge + Kafka compose config"));
+        assertTrue(rootWorkflow.contains("config --quiet"));
         assertTrue(rootWorkflow.contains("bash scripts/start-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("bash scripts/stop-edge-kafka.sh"));

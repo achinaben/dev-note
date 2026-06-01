@@ -30,6 +30,14 @@ jobs:
           cache: maven
           cache-dependency-path: scm-platform/**/pom.xml
 
+      - name: Check Docker Compose availability
+        run: |
+          docker version
+          docker compose version
+
+      - name: Validate edge + Kafka compose config
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml config --quiet
+
       - name: Start edge + Kafka stack
         run: |
           chmod +x scripts/*.sh
