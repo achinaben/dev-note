@@ -14,7 +14,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: jdbc,docker,jwt,jwt-jwks
       SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs
-      SCM_JWT_ISSUER: http://keycloak:8080/realms/scm
+      SCM_JWT_ISSUER: http://localhost:8180/realms/scm
 
   scm-gateway-jwt:
     build:
@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     ports: ["8089:8080"]
     environment:
-      SCM_JWT_ISSUER: http://keycloak:8080/realms/scm
+      SCM_JWT_ISSUER: http://localhost:8180/realms/scm
       SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs
     depends_on:
       scm-oms:

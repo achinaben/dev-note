@@ -25,6 +25,7 @@ public final class ScmScenarioContext {
         public String notifyId;
         public String errorCode;
         public String afterSaleNo;
+        public String omsBearerToken;
         /** WMS 交接发运时写入的运单号，供 TMS 联动断言 */
         public String handoverWaybill;
     }

@@ -8,6 +8,7 @@ import io.cucumber.java.zh_cn.当;
 import io.cucumber.java.zh_cn.那么;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 
 import java.net.Socket;
 import java.util.Map;
@@ -72,6 +73,9 @@ public class E2EStepDefinitions {
         var req = given().baseUri(omsBase)
                 .header("Idempotency-Key", ctx.clientToken)
                 .contentType(ContentType.JSON).body(body);
+        if (OMS.equals(omsBase)) {
+            req = withOmsAuth(req);
+        }
         if (isGatewayBase(omsBase)) {
             req = req.header("X-Api-Key", "e2e-gateway-key");
         }
@@ -91,6 +95,33 @@ public class E2EStepDefinitions {
     private static boolean isGatewayBase(String base) {
         String gw = System.getenv("SCM_GATEWAY_URL");
         return gw != null && !gw.isBlank() && base.equals(gw.replaceAll("/$", ""));
+    }
+
+    private static RequestSpecification givenOms() {
+        return withOmsAuth(given().baseUri(OMS));
+    }
+
+    private static RequestSpecification withOmsAuth(RequestSpecification req) {
+        String token = resolveOmsBearerToken();
+        if (token == null) {
+            return req;
+        }
+        return req.header("Authorization", "Bearer " + token);
+    }
+
+    private static String resolveOmsBearerToken() {
+        String mode = System.getenv("SCM_E2E_OMS_AUTH");
+        if (!"keycloak".equalsIgnoreCase(mode)) {
+            return null;
+        }
+        var ctx = ScmScenarioContext.get();
+        if (ctx.omsBearerToken == null || ctx.omsBearerToken.isBlank()) {
+            ctx.omsBearerToken = fetchKeycloakAccessToken();
+        }
+        if (ctx.omsBearerToken == null || ctx.omsBearerToken.isBlank()) {
+            throw new AssertionError("Keycloak token unavailable for SCM_E2E_OMS_AUTH=keycloak");
+        }
+        return ctx.omsBearerToken;
     }
 
     @假如("网关地址已配置")
@@ -217,7 +248,7 @@ public class E2EStepDefinitions {
     public void assertOrderStatus(String status) throws InterruptedException {
         var ctx = ScmScenarioContext.get();
         for (int i = 0; i < 30; i++) {
-            String actual = given().baseUri(OMS).get("/api/v1/orders/{no}", ctx.orderNo)
+            String actual = givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
                     .then().statusCode(200)
                     .extract().path("data.status");
             if (status.equals(actual)) {
@@ -225,7 +256,7 @@ public class E2EStepDefinitions {
             }
             Thread.sleep(300);
         }
-        given().baseUri(OMS).get("/api/v1/orders/{no}", ctx.orderNo)
+        givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
                 .then().statusCode(200)
                 .body("data.status", equalTo(status));
     }
