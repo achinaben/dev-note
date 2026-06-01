@@ -24,6 +24,7 @@ class EdgeKafkaStackConfigTest {
         String compose = read(root, "docker-compose.yml");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
+        assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
         assertUsesEdgeKafkaComposeChain(startScript);
         assertUsesEdgeKafkaComposeChain(stopScript);
         assertTrue(runScript.contains("-Pe2e-kafka"));

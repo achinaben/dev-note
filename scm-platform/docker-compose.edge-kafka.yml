@@ -1,6 +1,9 @@
 # Final overlay for edge + Kafka stacks. Keep this file last so the OMS
 # profile keeps both JWT verification and Kafka event processing enabled.
 services:
+  scm-gateway:
+    profiles: ["legacy-gateway"]
+
   scm-oms:
     environment:
       SPRING_PROFILES_ACTIVE: jdbc,docker,jwt,jwt-jwks,kafka,docker-kafka
