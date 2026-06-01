@@ -27,6 +27,10 @@ class EdgeKafkaStackConfigTest {
                 "scm-common-spring/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports");
         String jdbcStorageConfiguration = read(root,
                 "scm-common-spring/src/main/java/com/scm/spring/storage/EnableJdbcStorageConfiguration.java");
+        String erpApplication = read(root, "scm-erp-service/src/main/java/com/scm/erp/ErpApplication.java");
+        String omsApplication = read(root, "scm-oms-service/src/main/java/com/scm/oms/OmsApplication.java");
+        String wmsApplication = read(root, "scm-wms-service/src/main/java/com/scm/wms/WmsApplication.java");
+        String tmsApplication = read(root, "scm-tms-service/src/main/java/com/scm/tms/TmsApplication.java");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
@@ -41,7 +45,8 @@ class EdgeKafkaStackConfigTest {
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
         assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
-        assertJdbcStorageIsAutoConfigured(commonSpringImports, jdbcStorageConfiguration);
+        assertJdbcStorageIsAutoConfigured(commonSpringImports, jdbcStorageConfiguration,
+                erpApplication, omsApplication, wmsApplication, tmsApplication);
 
         assertTrue(workflow.contains("e2e-edge-kafka-stack:"));
         assertTrue(workflow.contains("bash scripts/start-edge-kafka.sh"));
@@ -86,7 +91,8 @@ class EdgeKafkaStackConfigTest {
         assertFalse(serviceDockerfile.contains("-Xmx384m"));
     }
 
-    private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports, String jdbcStorageConfiguration) {
+    private static void assertJdbcStorageIsAutoConfigured(String commonSpringImports, String jdbcStorageConfiguration,
+                                                          String... serviceApplications) {
         assertTrue(commonSpringImports.contains("com.scm.spring.storage.EnableJdbcStorageConfiguration"));
         assertTrue(jdbcStorageConfiguration.contains("DataSource scmDataSource"));
         assertTrue(jdbcStorageConfiguration.contains("properties.initializeDataSourceBuilder().build()"));
@@ -94,6 +100,10 @@ class EdgeKafkaStackConfigTest {
         assertTrue(jdbcStorageConfiguration.contains("PlatformTransactionManager scmTransactionManager"));
         assertTrue(jdbcStorageConfiguration.contains("Flyway scmFlyway"));
         assertTrue(jdbcStorageConfiguration.contains("FlywayMigrationInitializer scmFlywayMigrationInitializer"));
+        for (String serviceApplication : serviceApplications) {
+            assertTrue(serviceApplication.contains("import com.scm.spring.storage.EnableJdbcStorageConfiguration;"));
+            assertTrue(serviceApplication.contains("@Import(EnableJdbcStorageConfiguration.class)"));
+        }
     }
 
     private static void assertRootWorkflowTriggersScmWaveAndRunsK05(String rootWorkflow) {
