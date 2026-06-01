@@ -7,14 +7,16 @@
 | 项 | 值 |
 |----|-----|
 | 目标波次 | W37 |
-| 上次更新 | 2026-06-01 |
-| 上次 mvn test | scm-oms-service / scm-contract-check 局部通过 |
-| 阻塞项 | 无（JDK25 WireMock / 本机 Docker 仅影响部分联调，不阻断 W37 代码与 CI） |
+
+| 上次更新 | 2026-06-01 19:04 UTC |
+| 上次 mvn test | `mvn test` 失败于 TMS WireMock/Jetty；`mvn -pl scm-contract-check -am test` 通过 |
+| 阻塞项 | 全量测试在 TMS WireMock/Jetty 依赖冲突处失败；本轮 OpenResty 契约测试不受影响 |
+
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
 ## W37 清单
 
-- [ ] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
+- [x] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
 - [ ] 全栈 E2E-06（售后拦截）
 - [x] Kafka profile 纳入 compose（docker-compose.kafka-overlay.yml + application-docker-kafka）
 - [ ] E2E-K05 在 compose 栈上 CI 跑通
@@ -47,6 +49,14 @@
 
 - 新增 docker-compose.kafka-overlay.yml、application-docker-kafka（三服务）
 - mvn test：未全量跑（本机 JDK25 WireMock）
+
+### 2026-06-01 Agent（OpenResty direct JWKS）
+
+- 完成：OpenResty 内嵌 lua-resty-openidc，使用 `SCM_JWT_JWKS_URI` 直连 JWKS 验 RS256；保留 iss、exp、scope 与 Keycloak realm roles 校验。
+- 网关：移除 OMS JWT 子请求校验，补充 JWKS 缓存、Docker DNS resolver、CA 证书配置；compose 为 edge、本地网关补齐 JWKS 地址。
+- 契约：新增 OpenResty JWKS 配置测试，防止回退到 OMS auth_request。
+- 测试：`mvn -pl scm-contract-check -am test` 通过；`mvn test` 在 TMS WireMock/Jetty 依赖冲突处失败。
+- 下一动作：全栈 E2E-06（售后拦截）。
 
 ### 2026-06-01 Cloud Automation Run（失败）
 

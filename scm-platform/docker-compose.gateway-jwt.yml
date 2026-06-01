@@ -7,6 +7,9 @@ services:
     ports: ["8080:8080"]
     environment:
       SCM_JWT_ISSUER: http://localhost:8180/realms/scm
+      SCM_JWT_JWKS_URI: http://host.docker.internal:8180/realms/scm/protocol/openid-connect/certs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       scm-oms:
         condition: service_healthy
