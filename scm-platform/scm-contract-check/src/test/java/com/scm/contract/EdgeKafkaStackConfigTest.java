@@ -90,6 +90,8 @@ class EdgeKafkaStackConfigTest {
         assertTrue(commonSpringImports.contains("com.scm.spring.storage.EnableJdbcStorageConfiguration"));
         assertTrue(jdbcStorageConfiguration.contains("DataSource scmDataSource"));
         assertTrue(jdbcStorageConfiguration.contains("properties.initializeDataSourceBuilder().build()"));
+        assertTrue(jdbcStorageConfiguration.contains("JdbcTemplate scmJdbcTemplate"));
+        assertTrue(jdbcStorageConfiguration.contains("PlatformTransactionManager scmTransactionManager"));
         assertTrue(jdbcStorageConfiguration.contains("Flyway scmFlyway"));
         assertTrue(jdbcStorageConfiguration.contains("FlywayMigrationInitializer scmFlywayMigrationInitializer"));
     }
