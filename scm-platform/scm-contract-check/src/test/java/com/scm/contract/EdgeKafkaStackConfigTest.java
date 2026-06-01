@@ -78,8 +78,12 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("Build OpenResty gateway image"));
         assertTrue(rootWorkflow.contains("build scm-gateway-jwt"));
         assertTrue(rootWorkflow.contains("Build SCM service images"));
-        assertTrue(rootWorkflow.contains("Start edge + Kafka infrastructure"));
-        assertTrue(rootWorkflow.contains("up -d mysql-erp mysql-oms mysql-wms mysql-tms redis kafka keycloak"));
+        assertTrue(rootWorkflow.contains("Start MySQL and Redis infrastructure"));
+        assertTrue(rootWorkflow.contains("up -d mysql-erp mysql-oms mysql-wms mysql-tms redis"));
+        assertTrue(rootWorkflow.contains("Start Kafka infrastructure"));
+        assertTrue(rootWorkflow.contains("up -d kafka"));
+        assertTrue(rootWorkflow.contains("Start Keycloak infrastructure"));
+        assertTrue(rootWorkflow.contains("up -d keycloak"));
         assertTrue(rootWorkflow.contains("Start edge + Kafka services"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-erp scm-tms scm-oms scm-wms scm-mock-pay scm-mock-carrier scm-mock-inventory scm-gateway-jwt"));
         assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));

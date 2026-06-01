@@ -44,8 +44,14 @@ jobs:
       - name: Build SCM service images
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml build scm-erp scm-oms scm-wms scm-tms scm-mock-pay scm-mock-carrier scm-mock-inventory
 
-      - name: Start edge + Kafka infrastructure
-        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d mysql-erp mysql-oms mysql-wms mysql-tms redis kafka keycloak
+      - name: Start MySQL and Redis infrastructure
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d mysql-erp mysql-oms mysql-wms mysql-tms redis
+
+      - name: Start Kafka infrastructure
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d kafka
+
+      - name: Start Keycloak infrastructure
+        run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d keycloak
 
       - name: Start edge + Kafka services
         run: |
