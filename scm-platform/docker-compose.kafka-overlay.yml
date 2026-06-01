@@ -1,9 +1,6 @@
 # 与 full / edge 联用：启用 Kafka 事件总线（E2E-K05）
 # docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.kafka-overlay.yml up -d
 services:
-  kafka:
-    profiles: []
-
   scm-oms:
     environment:
       SPRING_PROFILES_ACTIVE: jdbc,docker,kafka,docker-kafka

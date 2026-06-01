@@ -20,6 +20,7 @@ class EdgeKafkaStackConfigTest {
         String runScript = read(root, "scripts/run-e2e-edge-kafka.sh");
         String workflow = read(root, ".github/workflows/scm-ci.yml");
         String rootWorkflow = read(root.getParent(), ".github/workflows/scm-platform-edge-kafka.yml");
+        String kafkaOverlay = read(root, "docker-compose.kafka-overlay.yml");
         String compose = read(root, "docker-compose.yml");
 
         assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
@@ -28,6 +29,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(runScript.contains("-Pe2e-kafka"));
         assertTrue(runScript.contains("@E2E-K05"));
         assertTrue(runScript.contains("SCM_E2E_OMS_AUTH"));
+        assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
 
@@ -51,6 +53,10 @@ class EdgeKafkaStackConfigTest {
         assertTrue(compose.contains("PLAINTEXT://kafka:9092"));
         assertTrue(compose.contains("EXTERNAL://localhost:9092"));
         assertTrue(compose.contains("KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT"));
+    }
+
+    private static void assertKafkaOverlayDoesNotUseEmptyProfiles(String kafkaOverlay) {
+        assertFalse(kafkaOverlay.contains("profiles: []"));
     }
 
     private static void assertEdgeStackAcceptsHostIssuedKeycloakTokens(String edgeCompose) {
