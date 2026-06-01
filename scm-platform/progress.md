@@ -8,7 +8,7 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 20:51 UTC |
+| 上次更新 | 2026-06-01 20:59 UTC |
 | 上次 mvn test | `mvn test` 通过 |
 | 阻塞项 | 无 |
 
@@ -88,3 +88,12 @@
 - 契约：Edge Kafka 栈配置测试补充 Kafka 内外监听断言，防止回退为单一 localhost advertised listener。
 - 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI，无法本地起 compose 栈。
 - 下一动作：观察 `e2e-edge-kafka-stack` 推送后的 CI 结果；若仍失败，按 CI 日志继续修复。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 edge JWT 修复）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；本轮启动时仍有 target 生成物阻塞 rebase pull，已确认仅为构建产物并清理后继续。
+- 修复：edge 栈 JWT issuer 改为宿主机 Keycloak 入口 `http://localhost:8180/realms/scm`，JWKS 仍走容器内 `keycloak:8080`，避免宿主机获取的 Keycloak token 因 issuer 不一致被 OpenResty/OMS 拒绝。
+- 修复：E2E-K05 运行脚本默认启用 `SCM_E2E_OMS_AUTH=keycloak`；Kafka 场景直连 OMS 建单与查单时自动携带 Keycloak Bearer，适配 edge+kafka 组合下 OMS 的 JWT/JWKS 严格模式。
+- 契约：Edge Kafka 栈配置测试补充 issuer/JWKS 分工与 K05 脚本认证开关断言。
+- 测试：`mvn -pl scm-contract-check test` 通过；`mvn test` 通过。当前云 VM 无 Docker CLI（`docker: command not found`），compose 实跑仍需 GitHub CI job 验证。
+- 下一动作：观察 `e2e-edge-kafka-stack` CI；若通过则勾选 W37 E2E-K05，否则继续按 CI 日志修复。
