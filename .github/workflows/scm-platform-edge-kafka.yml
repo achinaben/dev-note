@@ -72,6 +72,24 @@ jobs:
       - name: Start Keycloak infrastructure
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d keycloak
 
+      - name: Wait for Keycloak token endpoint
+        run: |
+          for _ in $(seq 1 80); do
+            http_code=$(curl -s -o /tmp/keycloak-token.json -w "%{http_code}" \
+              -X POST http://127.0.0.1:8180/realms/scm/protocol/openid-connect/token \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              --data "grant_type=password&client_id=scm-gateway&username=e2e-user&password=e2e-pass&scope=openid%20oms.write")
+            if [ "$http_code" = "200" ]; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Keycloak token endpoint timeout" >&2
+          docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml logs --tail=200 keycloak
+          printf '%s\n' "Last token response:"
+          sed -e 's/.*//g' /tmp/keycloak-token.json >/dev/null 2>&1 || true
+          exit 1
+
       - name: Start TMS service
         run: docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compose.edge.yml -f docker-compose.kafka-overlay.yml -f docker-compose.edge-kafka.yml up -d --no-build scm-tms
 

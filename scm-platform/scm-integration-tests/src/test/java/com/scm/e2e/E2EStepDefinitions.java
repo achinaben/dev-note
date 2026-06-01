@@ -625,19 +625,31 @@ public class E2EStepDefinitions {
 
     private static String fetchKeycloakAccessToken() {
         String base = System.getenv().getOrDefault("KEYCLOAK_URL", "http://localhost:8180");
-        try {
-            return given().baseUri(base)
-                    .contentType("application/x-www-form-urlencoded")
-                    .formParam("grant_type", "password")
-                    .formParam("client_id", "scm-gateway")
-                    .formParam("username", "e2e-user")
-                    .formParam("password", "e2e-pass")
-                    .formParam("scope", "openid oms.write")
-                    .post("/realms/scm/protocol/openid-connect/token")
-                    .then().extract().path("access_token");
-        } catch (Exception e) {
-            return null;
+        for (int i = 0; i < 40; i++) {
+            try {
+                String token = given().baseUri(base)
+                        .contentType("application/x-www-form-urlencoded")
+                        .formParam("grant_type", "password")
+                        .formParam("client_id", "scm-gateway")
+                        .formParam("username", "e2e-user")
+                        .formParam("password", "e2e-pass")
+                        .formParam("scope", "openid oms.write")
+                        .post("/realms/scm/protocol/openid-connect/token")
+                        .then().extract().path("access_token");
+                if (token != null && !token.isBlank()) {
+                    return token;
+                }
+            } catch (Exception ignored) {
+                // Keycloak may still be importing the realm in compose CI.
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
+            }
         }
+        return null;
     }
 
     @并且("WMS 退货入库完成")
