@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 21:00 UTC |
+| 上次更新 | 2026-06-01 22:09 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | 无 |
+| 阻塞项 | edge + Kafka CI 已推进到 ERP/TMS 健康响应等待失败 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -103,3 +103,12 @@
 - 已确认远程 `cursor/scm-wave` 包含 edge + Kafka E2E-K05 的 JWT token 修复提交，本地重复提交已清理并与远程对齐。
 - 保留远程实现：edge 栈使用宿主机可见 issuer、容器内 JWKS；K05 脚本启用 `SCM_E2E_OMS_AUTH`，E2E 通过 Keycloak token 访问开启 JWT 的 OMS。
 - 本轮仅提交进度记录；下一动作仍是观察 `e2e-edge-kafka-stack` CI 结果，若失败继续修复。
+
+### 2026-06-01 Cloud Automation Run（E2E-K05 compose CI 入口与栈启动修复）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- CI 入口：新增仓库根 GitHub Actions workflow，使 `cursor/scm-wave` 推送可触发 edge + Kafka E2E-K05；移除隐藏失败的 `continue-on-error`，补充 Docker/compose config 预检。
+- 栈启动：OpenResty 镜像补 Perl 以支持 opm；Kafka 改用与测试一致的 Confluent 7.5 KRaft 单节点；edge+kafka 默认跳过旧 8080 网关；CI 按基础设施、服务组分阶段启动并等待 Kafka、应用健康。
+- 当前 CI 观察：构建、MySQL/Redis、Kafka、Keycloak 均通过；最新失败点已推进到 ERP/TMS HTTP 健康响应等待，OMS/WMS 与 E2E-K05 尚未执行。
+- 测试：本地 `mvn test` 通过。云 VM 无 Docker CLI，compose 实跑依赖 GitHub Actions。
+- 下一动作：继续定位 ERP/TMS 容器未返回健康响应的原因；若能取得日志，优先查看 ERP/TMS 启动日志与数据库/Kafka连接。
