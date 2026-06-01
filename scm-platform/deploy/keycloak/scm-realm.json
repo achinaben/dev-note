@@ -9,8 +9,7 @@
       "directAccessGrantsEnabled": true,
       "redirectUris": ["http://localhost:8080/*"],
       "webOrigins": ["*"],
-      "defaultClientScopes": ["profile", "email", "roles"],
-      "optionalClientScopes": ["oms.write", "wms.write"]
+      "defaultClientScopes": ["profile", "email", "roles"]
     }
   ],
   "users": [

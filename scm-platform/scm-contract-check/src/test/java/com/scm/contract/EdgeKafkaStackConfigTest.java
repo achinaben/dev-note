@@ -15,6 +15,7 @@ class EdgeKafkaStackConfigTest {
         Path root = resolvePlatformRoot();
         String edgeKafkaCompose = read(root, "docker-compose.edge-kafka.yml");
         String edgeCompose = read(root, "docker-compose.edge.yml");
+        String keycloakRealm = read(root, "deploy/keycloak/scm-realm.json");
         String startScript = read(root, "scripts/start-edge-kafka.sh");
         String stopScript = read(root, "scripts/stop-edge-kafka.sh");
         String runScript = read(root, "scripts/run-e2e-edge-kafka.sh");
@@ -45,6 +46,7 @@ class EdgeKafkaStackConfigTest {
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
+        assertKeycloakRealmUsesClientRoles(keycloakRealm);
         assertServiceImagesUseCiFriendlyJvmDefaults(serviceDockerfile);
         assertServiceModulesBuildExecutableJars(parentPom);
         assertJdbcStorageIsAutoConfigured(commonSpringImports, jdbcStorageConfiguration,
@@ -86,6 +88,12 @@ class EdgeKafkaStackConfigTest {
     private static void assertEdgeStackAcceptsHostIssuedKeycloakTokens(String edgeCompose) {
         assertTrue(edgeCompose.contains("SCM_JWT_ISSUER: http://localhost:8180/realms/scm"));
         assertTrue(edgeCompose.contains("SCM_JWT_JWKS_URI: http://keycloak:8080/realms/scm/protocol/openid-connect/certs"));
+    }
+
+    private static void assertKeycloakRealmUsesClientRoles(String keycloakRealm) {
+        assertTrue(keycloakRealm.contains("\"defaultClientScopes\": [\"profile\", \"email\", \"roles\"]"));
+        assertTrue(keycloakRealm.contains("\"scm-gateway\": [\"oms.write\", \"wms.write\"]"));
+        assertFalse(keycloakRealm.contains("\"optionalClientScopes\": [\"oms.write\", \"wms.write\"]"));
     }
 
     private static void assertServiceImagesUseCiFriendlyJvmDefaults(String serviceDockerfile) {
