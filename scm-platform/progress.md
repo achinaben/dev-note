@@ -8,16 +8,16 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 19:04 UTC |
-| 上次 mvn test | `mvn test` 失败于 TMS WireMock/Jetty；`mvn -pl scm-contract-check -am test` 通过 |
-| 阻塞项 | 全量测试在 TMS WireMock/Jetty 依赖冲突处失败；本轮 OpenResty 契约测试不受影响 |
+| 上次更新 | 2026-06-01 20:34 UTC |
+| 上次 mvn test | `mvn test` 通过 |
+| 阻塞项 | 无 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
 ## W37 清单
 
 - [x] OpenResty 内嵌 lua-resty-openidc 直连 JWKS
-- [ ] 全栈 E2E-06（售后拦截）
+- [x] 全栈 E2E-06（售后拦截）
 - [x] Kafka profile 纳入 compose（docker-compose.kafka-overlay.yml + application-docker-kafka）
 - [ ] E2E-K05 在 compose 栈上 CI 跑通
 
@@ -63,3 +63,11 @@
 - 触发成功，但云端 /agent 工作区空，未检出 dev-note，找不到 scm-platform
 - 阻塞：Automation 需绑定 repo achinaben/dev-note + 指令先 cd scm-platform
 - 已更新 scm-wave-minute.instructions.txt 与 prefill gitConfig
+
+### 2026-06-01 Cloud Automation Run（W37 E2E-06）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；本地阻塞拉取的是上一轮生成的 target 产物，已还原后继续。
+- 完成：全栈 E2E-06 售后拦截验收通过；OMS 调 TMS 重复建运单时将 `TMS_10001` 幂等重放视为可继续，送达流程不再 500。
+- 修正：OpenResty JWT 契约测试同时接受 luarocks 与 OpenResty opm 安装 lua-resty-openidc，匹配当前 Dockerfile 实现。
+- 测试：`mvn -pl scm-oms-service -Dtest=TmsFulfillmentClientTest test`、`mvn -pl scm-integration-tests -Pe2e test -Dcucumber.filter.tags='@E2E-06'`、`mvn -pl scm-contract-check test`、`mvn test` 均通过。
+- 下一动作：edge + kafka 一键脚本与 CI job，继续推进 E2E-K05 在 compose 栈上跑通。

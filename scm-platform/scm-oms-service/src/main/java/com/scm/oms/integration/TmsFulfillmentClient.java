@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -42,8 +43,15 @@ public class TmsFulfillmentClient {
 
     public void createShipment(String packageNo, String orderNo, String carrierCode, String waybillNo) {
         HttpHeaders headers = shipmentHeaders(packageNo);
-        rest.postForEntity(tmsBaseUrl + "/tms/v1/shipment/create",
-                new HttpEntity<>(shipmentBody(packageNo, orderNo, carrierCode, waybillNo), headers), Map.class);
+        try {
+            rest.postForEntity(tmsBaseUrl + "/tms/v1/shipment/create",
+                    new HttpEntity<>(shipmentBody(packageNo, orderNo, carrierCode, waybillNo), headers), Map.class);
+        } catch (HttpStatusCodeException e) {
+            if (isIdempotentReplay(e)) {
+                return;
+            }
+            throw e;
+        }
     }
 
     public void createAndDeliver(String packageNo, String orderNo) {
@@ -59,6 +67,11 @@ public class TmsFulfillmentClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Idempotency-Key", packageNo);
         return headers;
+    }
+
+    private static boolean isIdempotentReplay(HttpStatusCodeException e) {
+        return e.getStatusCode().value() == 409
+                && e.getResponseBodyAsString().contains("\"code\":\"TMS_10001\"");
     }
 
     private static Map<String, Object> shipmentBody(

@@ -21,7 +21,8 @@ class OpenRestyJwtGatewayTest {
         String edgeCompose = Files.readString(root.resolve("docker-compose.edge.yml"));
         String localCompose = Files.readString(root.resolve("docker-compose.gateway-jwt-local.yml"));
 
-        assertTrue(dockerfile.contains("luarocks install lua-resty-openidc"));
+        assertTrue(dockerfile.contains("luarocks install lua-resty-openidc")
+                || dockerfile.contains("opm get zmartzone/lua-resty-openidc"));
         assertTrue(jwtAuth.contains("require \"resty.openidc\""));
         assertTrue(jwtAuth.contains("bearer_jwt_verify"));
         assertTrue(jwtAuth.contains("SCM_JWT_JWKS_URI"));
