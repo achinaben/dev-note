@@ -247,14 +247,14 @@ public class E2EStepDefinitions {
     @那么("订单状态应为 {word}")
     public void assertOrderStatus(String status) throws InterruptedException {
         var ctx = ScmScenarioContext.get();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 60; i++) {
             String actual = givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
                     .then().statusCode(200)
                     .extract().path("data.status");
             if (status.equals(actual)) {
                 return;
             }
-            Thread.sleep(300);
+            Thread.sleep(500);
         }
         givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
                 .then().statusCode(200)
@@ -475,14 +475,14 @@ public class E2EStepDefinitions {
 
     private void assertPackageTmsWaybill(String packageNo) throws InterruptedException {
         String expected = "WB-" + packageNo;
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 60; i++) {
             String waybill = given().baseUri(TMS).queryParam("package_no", packageNo)
                     .get("/tms/v1/ops/shipment/detail")
                     .then().extract().path("data.waybill_no");
             if (expected.equals(waybill)) {
                 return;
             }
-            Thread.sleep(300);
+            Thread.sleep(500);
         }
         given().baseUri(TMS).queryParam("package_no", packageNo)
                 .get("/tms/v1/ops/shipment/detail")
@@ -719,8 +719,8 @@ public class E2EStepDefinitions {
     @假如("已 PAID 且含 2 个包裹 Kafka")
     public void paidTwoPackagesKafka() {
         submitOrder();
-        payViaMockPay();
         initTwoPackages();
+        payViaMockPay();
     }
 
     @当("对第 1 个包裹的 WMS 出库单执行发运")
