@@ -23,6 +23,7 @@ class OpenRestyJwtGatewayTest {
 
         assertTrue(dockerfile.contains("luarocks install lua-resty-openidc")
                 || dockerfile.contains("opm get zmartzone/lua-resty-openidc"));
+        assertTrue(dockerfile.contains("perl"));
         assertTrue(jwtAuth.contains("require \"resty.openidc\""));
         assertTrue(jwtAuth.contains("bearer_jwt_verify"));
         assertTrue(jwtAuth.contains("SCM_JWT_JWKS_URI"));

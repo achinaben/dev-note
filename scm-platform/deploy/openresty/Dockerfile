@@ -1,7 +1,7 @@
 
 # OpenResty 网关 — JWT RS256/JWKS 校验 + X-Api-Key 南北向鉴权
 FROM openresty/openresty:1.25.3.2-alpine
-RUN apk add --no-cache ca-certificates curl \
+RUN apk add --no-cache ca-certificates curl perl \
     && opm get zmartzone/lua-resty-openidc
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
