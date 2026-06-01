@@ -12,7 +12,7 @@
     "actions": [],
     "prompts": [
       {
-        "prompt": "scm-platform Agent，每分钟一轮。仓库 achinaben/dev-note，必须先 cd scm-platform（云端 /agent 若空则写阻塞并结束）。禁止用 gh。读 progress.md+AGENTS.md，做 W37 一条，mvn test，更新 progress。Git：只 push 到固定分支 cursor/scm-wave，禁止每轮新建 cursor/agent-*，禁止 push main。3～5 条中文 bullet。"
+        "prompt": "scm-platform Agent，每分钟一轮。仓库 achinaben/dev-note。每轮最先在仓库根：git fetch && git checkout cursor/scm-wave && git pull --rebase（本机 push 后必须先拉再 run）。再 cd scm-platform；禁止 gh。读 progress+AGENTS，做波次一条，mvn test，更新 progress。结束只 push cursor/scm-wave，禁止 agent-* 新分支与 push main。3～5 条中文 bullet。"
       }
     ],
     "model": "",

@@ -3,23 +3,28 @@
 ## 云端工作区（必须先做，解决 /agent 空目录）
 0. 本任务绑定 GitHub 仓库 **achinaben/dev-note**（整仓），代码在子目录 **scm-platform/**。
 1. 启动后立刻执行：`pwd && ls -la`；若当前目录为空或没有 scm-platform，说明未检出仓库——只写 progress 阻塞项「云端未检出 dev-note」后结束，不要用 gh 命令。
-2. 进入工作目录：`cd scm-platform`（若不存在则 `find / -maxdepth 4 -type d -name scm-platform 2>/dev/null | head -1` 再 cd）。
-3. **禁止依赖** `gh` CLI；不要执行 gh auth / gh repo view。
+2. **Git 同步（每轮最先，在改任何业务文件前）**：在 **仓库根**（含 `.git` 的 dev-note 根目录）执行：
+   `git fetch origin && git checkout cursor/scm-wave && git pull --rebase origin cursor/scm-wave`
+   - 目的：本机 Cursor 已 push 到远程的改动，云端本轮必须先拉到再 run。
+   - 若 pull 冲突：只写 progress 阻塞项「cursor/scm-wave 与远程冲突需人工处理」，本轮结束。
+3. 进入工作目录：`cd scm-platform`（若不存在则 `find / -maxdepth 4 -type d -name scm-platform 2>/dev/null | head -1` 再 cd）。
+4. **禁止依赖** `gh` CLI；不要执行 gh auth / gh repo view。
 
 ## 防重 / 空转
-4. 读 **scm-platform/progress.md** 与 **scm-platform/AGENTS.md**（路径相对仓库根：先 cd scm-platform 再读 progress.md、AGENTS.md）。
-5. 若运行日志最后一条在 2 分钟内且仅为「跳过」、本轮无变更：追加「跳过：距上轮过近」后结束。
-6. 跟 AGENTS.md「下一步」做 W37；勿因 W36 已完成就停。
+5. 读 **scm-platform/progress.md** 与 **scm-platform/AGENTS.md**（先 cd scm-platform 再读）。
+6. 若运行日志最后一条在 2 分钟内且仅为「跳过」、本轮无变更：追加「跳过：距上轮过近」后结束。
+7. 跟 AGENTS.md「下一步」做当前波次；勿因旧波次已完成就停。
 
 ## 执行
-7. 本轮只做一条未完成项；禁止改 业务方案/ai-dev/contracts 字段。
-8. 在 scm-platform 目录执行 `mvn test`（可 `-pl` 单模块）；未全绿则修或写阻塞项。
-9. 更新 scm-platform/progress.md 运行日志；commit 后 push（见下方 Git 节）。
+8. 本轮只做一条未完成项；禁止改 业务方案/ai-dev/contracts 字段。
+9. 在 scm-platform 目录执行 `mvn test`（可 `-pl` 单模块）；未全绿则修或写阻塞项。
+10. 更新 scm-platform/progress.md 运行日志；commit 后 push（见 Git 提交节）。
 
-## Git（固定工作分支，与个人分支模型一致）
-- 工作分支：cursor/scm-wave（全波次共用；已在该分支则不要 checkout -b 新分支）。
-- 每轮成功：git add → commit → git push origin cursor/scm-wave；推送前可 git pull --rebase origin cursor/scm-wave。
-- 禁止创建 cursor/agent-* 或任何新的随机 agent 分支；禁止 push 到 main；禁止自行 merge 到 main。
+## Git 提交（每轮结束，在仓库根执行）
+- 工作分支：cursor/scm-wave（不要 checkout -b 新分支）。
+- 推送前可再执行：`git pull --rebase origin cursor/scm-wave`（与步骤 2 不重复冲突时跳过亦可）。
+- 每轮成功：`git add` → `git commit` → `git push origin cursor/scm-wave`。
+- 禁止创建 cursor/agent-*；禁止 push/merge 到 main。
 
 ## 结束
-10. 中文 3～5 条 bullet：完成项/跳过原因、测试情况、下次从哪项继续。
+11. 中文 3～5 条 bullet：完成项/跳过原因、是否已 pull 到本机最新 push、测试情况、下次从哪项继续。

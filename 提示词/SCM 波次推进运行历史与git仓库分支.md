@@ -14,7 +14,7 @@
 | **运行历史** | 只看跑没跑成功；**不等于**新建分支 |
 | **你收尾** | 波次结束 → **1 次** PR 或 merge：`cursor/scm-wave` → `main` |
 
-配置与验收：第 **2.3、2.7** 节。本机提交：第 **2.4** 节。历史 `cursor/agent-*`：附录 A。
+配置与验收：第 **2.3、2.9** 节。本机 push / 云端先 pull：第 **2.4、2.5** 节。历史 `cursor/agent-*`：附录 A。
 
 ---
 
@@ -86,13 +86,37 @@ git push origin cursor/scm-wave
 | `unknown option trailer`（commit 失败） | 用 `D:\dev\Git\cmd\git.exe commit --no-verify -m "说明"` |
 | 未跟踪的 `target/**/*.class` | **不要 add**；属 Maven 编译产物 |
 
-### 2.5 本机与云端同时开发时
+### 2.5 本机 push 后，云端 Run 必须先拉再改（重要）
 
-- 本机也可 checkout `cursor/scm-wave` 协作；push 前 `pull --rebase`。
-- 若本机仍在自己的 `feat/xxx` 分支，与云端分支是两套线，合并前要想好以哪条为准。
-- 波次合并进 `main` 后，可删除或保留 `cursor/scm-wave`；下一波次可从最新 `main` 再拉一条新工作分支（或继续沿用并 rebase）。
+同一分支 **`cursor/scm-wave`** 上，本机与云端轮流提交。正确顺序：
 
-### 2.6 不推荐的做法（对照）
+```
+本机 Cursor：改代码 → commit → push origin cursor/scm-wave
+                    ↓
+GitHub 远程：cursor/scm-wave 更新
+                    ↓
+下一分钟 Automation Run：
+  ① 仓库根 git fetch + checkout cursor/scm-wave + pull --rebase  ← 必须先做
+  ② 再 cd scm-platform 读 AGENTS/progress、改代码、mvn test
+  ③ 结束后再 commit + push 回 cursor/scm-wave
+```
+
+| 若云端不做步骤 ① | 后果 |
+|------------------|------|
+| 直接改代码 | 基于**旧快照**，看不到你本机刚 push 的文档/配置/代码 |
+| 再 push | 易产生冲突或覆盖，Run 结果与预期不一致 |
+
+Instructions 已要求每轮 **步骤 2** 在改业务文件前执行 pull；Automations 须粘贴最新 `scm-wave-minute.instructions.txt`。
+
+**本机习惯：** push 后等 **1～2 分钟** 再看 Run History，让下一轮有机会先 pull 再跑。
+
+### 2.6 本机与云端同时开发时
+
+- 本机 checkout `cursor/scm-wave`；**push 前** `pull --rebase`，避免与云端提交冲突。
+- 若本机仍在 `feat/xxx`，与 `cursor/scm-wave` 是两套线，合并前要想好以哪条为准。
+- 波次合并进 `main` 后，可删除或保留 `cursor/scm-wave`；下一波次可从最新 `main` 再拉或 rebase 继续用。
+
+### 2.7 不推荐的做法（对照）
 
 | 做法 | 为何不符合你的模型 |
 |------|-------------------|
@@ -100,7 +124,7 @@ git push origin cursor/scm-wave
 | 每分钟自动 merge 到 `main` | 跳过「任务做完再合」的审查节奏 |
 | 只靠 Instructions 写 push、仪表盘仍是默认 | 仍会悄悄新建 `cursor/agent-*` |
 
-### 2.7 仪表盘逐项对照（按界面勾选）
+### 2.9 仪表盘逐项对照（按界面勾选）
 
 Cursor 界面会改版，下列为 **2026-06 前后** 常见英文文案及可能的中文含义。找不到某一项时，在 Automations 编辑器里展开 **Advanced / Git / Agent options**，或对照本节末尾「验收」。
 
@@ -556,7 +580,7 @@ git push origin --delete cursor/agent-a6c1
 5. 合并后：git checkout main && git pull
 ```
 
-若出现新的 `cursor/agent-*` → **配置错误**，按 2.7 节改仪表盘，不要用「每 Run 一分支」流程。
+若出现新的 `cursor/agent-*` → **配置错误**，按 2.9 节改仪表盘，不要用「每 Run 一分支」流程。
 
 ---
 
@@ -572,8 +596,8 @@ Automations 每分钟 → Run History（多轮）
 
 ## 附录 A：历史「一 Run 一分支」（已废弃，仅清理用）
 
-曾用 Cloud 默认时，每 Run 可能产生 `cursor/agent-xxxx`。**本项目不再采用。** 若远程仍有多条 agent 分支：按 **6.4 方式 D** 收口一次后删除；并立即按 **2.7** 固定 `cursor/scm-wave` + **Work on current branch**。
+曾用 Cloud 默认时，每 Run 可能产生 `cursor/agent-xxxx`。**本项目不再采用。** 若远程仍有多条 agent 分支：按 **6.4 方式 D** 收口一次后删除；并立即按 **2.9** 固定 `cursor/scm-wave` + **Work on current branch**。
 
 ---
 
-*文档版本：2026-06-02（2.4 本机提交；2.7 仪表盘；与 instructions.txt / prefill 同步），适用于 achinaben/dev-note + SCM 波次推进。*
+*文档版本：2026-06-02（2.5 本机 push 后云端先 pull；与 instructions.txt / prefill 同步），适用于 achinaben/dev-note + SCM 波次推进。*

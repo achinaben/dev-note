@@ -12,4 +12,4 @@ alwaysApply: true
 3. 禁止修改 `业务方案/ai-dev/contracts` 中契约字段。
 4. Automation 须在 Cursor「Automations」面板启用（仓库 prefill 不会自动跑）；定时为每分钟 `* * * * *`。2 分钟内仅「跳过」且无变更才可空转结束；跟 AGENTS「下一步」推进，勿因旧波次已完成而停止。
 5. 不要问用户「是否继续」；用 progress.md 运行日志留痕。
-6. **Git 仅个人工作分支模式**：只 push **`cursor/scm-wave`**；禁止每 Run 新建 `cursor/agent-*`；禁止 push/merge 到 `main`。Cloud 须 **Work on current branch** + 分支 `cursor/scm-wave`（见提示词目录分支专题笔记 2.6 节）。
+6. **Git 仅个人工作分支模式**：每轮开始先在仓库根 **pull `cursor/scm-wave`**（本机 push 后下轮必须先拉再 run）；结束只 push 该分支；禁止每 Run 新建 `cursor/agent-*`；禁止 push/merge `main`。Cloud 须 **Work on current branch** + 分支 `cursor/scm-wave`（分支专题 2.5、2.9 节）。
