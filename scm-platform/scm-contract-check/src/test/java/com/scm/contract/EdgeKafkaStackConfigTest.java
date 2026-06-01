@@ -95,9 +95,13 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("Start ERP and TMS services"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-erp scm-tms"));
         assertTrue(rootWorkflow.contains("Wait for ERP and TMS ports"));
+        assertTrue(rootWorkflow.contains("curl -sf http://127.0.0.1:8083/"));
+        assertTrue(rootWorkflow.contains("curl -sf http://127.0.0.1:8084/"));
         assertTrue(rootWorkflow.contains("Start OMS and WMS services"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-oms scm-wms"));
         assertTrue(rootWorkflow.contains("Wait for OMS and WMS ports"));
+        assertTrue(rootWorkflow.contains("curl -sf http://127.0.0.1:8081/"));
+        assertTrue(rootWorkflow.contains("curl -sf http://127.0.0.1:8082/"));
         assertTrue(rootWorkflow.contains("Start mock services"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-mock-pay scm-mock-carrier scm-mock-inventory"));
         assertTrue(rootWorkflow.contains("Start JWT gateway service"));
