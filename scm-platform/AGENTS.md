@@ -4,7 +4,7 @@
 
 **W36 已完成**：OpenResty RS256（auth_request→OMS）、全栈 mock、边缘 compose、网关路由契约测试、覆盖率 50%、CI e2e-stack-smoke。
 
-**W37 进行中**：OpenResty 已内嵌 lua-resty-openidc 直连 JWKS；全栈 E2E-06 已跑通；edge + kafka 一键脚本与 CI job 已补，下一项观察并修复 E2E-K05 compose CI。
+**W37 已完成**：OpenResty 已内嵌 lua-resty-openidc 直连 JWKS；全栈 E2E-06 已跑通；edge + Kafka 一键脚本与 CI job 已补；E2E-K05 已在 compose CI 跑通。
 
 ## 一键本地联调（Windows）
 
@@ -66,14 +66,12 @@ docker compose -f docker-compose.yml -f docker-compose.full.yml -f docker-compos
 mvn -pl scm-integration-tests -Pe2e-kafka test
 ```
 
-## 下一步（W37）
+## 下一步
 
 
 
-1. OpenResty 内嵌 lua-resty-openidc 直连 JWKS
-2. 全栈 E2E-06（售后拦截）
-3. edge + kafka 一键脚本与 CI job
-4. E2E-K05 compose CI 运行结果观察与修复（下一轮）
+1. 开启新波次前，先确认产品/业务目标。
+2. 可优先清理 E2E-K05 诊断输出，或恢复更严格的 edge JWT + Kafka 联合场景。
 
 ## Cursor Cloud specific instructions
 

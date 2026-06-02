@@ -8,9 +8,9 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-01 22:40 UTC |
+| 上次更新 | 2026-06-02 01:01 UTC |
 | 上次 mvn test | `mvn test` 通过 |
-| 阻塞项 | edge + Kafka CI 最新失败仍停在 TMS 端口等待；已补 JDBC 存储自动配置导入，等待新 CI 验证 |
+| 阻塞项 | 无；edge + Kafka E2E-K05 compose CI 已通过 |
 
 | 触发频率 | 每分钟 `* * * * *`（见 提示词/提示词.md） |
 
@@ -20,7 +20,7 @@
 - [x] 全栈 E2E-06（售后拦截）
 - [x] Kafka profile 纳入 compose（docker-compose.kafka-overlay.yml + application-docker-kafka）
 - [x] edge + Kafka 一键脚本与 CI job
-- [ ] E2E-K05 在 compose 栈上 CI 跑通
+- [x] E2E-K05 在 compose 栈上 CI 跑通
 
 ## W36 清单
 
@@ -155,3 +155,12 @@
 - 契约：Edge Kafka 栈配置测试新增公共自动配置导入断言，防止再次漏掉 JDBC 存储配置。
 - 测试：JDK 17 下 `mvn -pl scm-contract-check test` 通过；`mvn test` 全模块通过。当前云 VM 无 Docker CLI，compose 实跑仍需 GitHub Actions 验证。
 - 下一动作：观察新触发的 edge + Kafka CI 是否越过 TMS 端口等待并进入 ERP/OMS/WMS 与 E2E-K05；若仍失败，继续按 CI 步骤状态和可用日志修复。
+
+### 2026-06-02 Cloud Automation Run（E2E-K05 compose CI 跑通）
+
+- 已在仓库根同步 `cursor/scm-wave`；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- 修复：服务 Docker 镜像 package 阶段生成可执行 Spring Boot jar；四服务显式导入 JDBC 存储配置并补齐 DataSource/JdbcTemplate/Flyway；OMS Docker profile 改用 WMS 库存。
+- 修复：Kafka listener 纳入公共事件自动配置，Kafka publish 等待 broker ack；双包裹场景允许支付前初始化包裹，WMS 客户端按 package_no 创建出库，避免复用同订单首包出库。
+- CI：根 workflow 增加 MySQL/Redis 启动重试与 E2E 失败 annotation 诊断；edge+kafka K05 默认验证 Kafka 业务链路，不强制 OMS JWT，JWT 网关仍由独立网关场景覆盖。
+- 测试：JDK 17 下 `mvn test` 全模块通过；GitHub Actions `e2e-edge-kafka-stack` 最新 run（提交 `30c612e`）通过，E2E-K05 已在 compose 栈跑通。
+- 下一动作：W37 已完成；下一轮可开启新波次，优先清理临时诊断输出或恢复更严格的 edge JWT+Kafka 联合场景。
