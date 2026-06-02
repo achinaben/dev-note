@@ -252,18 +252,25 @@ public class E2EStepDefinitions {
     @那么("订单状态应为 {word}")
     public void assertOrderStatus(String status) throws InterruptedException {
         var ctx = ScmScenarioContext.get();
+        String lastBody = "";
+        String lastStatus = "";
         for (int i = 0; i < 60; i++) {
-            String actual = givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
-                    .then().statusCode(200)
-                    .extract().path("data.status");
+            Response response = givenOms().get("/api/v1/orders/{no}", ctx.orderNo);
+            if (response.statusCode() != 200) {
+                lastBody = response.asString();
+                lastStatus = "HTTP_" + response.statusCode();
+            } else {
+                lastBody = response.asString();
+                lastStatus = response.path("data.status");
+            }
+            String actual = lastStatus;
             if (status.equals(actual)) {
                 return;
             }
             Thread.sleep(500);
         }
-        givenOms().get("/api/v1/orders/{no}", ctx.orderNo)
-                .then().statusCode(200)
-                .body("data.status", equalTo(status));
+        throw new AssertionError("order status mismatch: expected="
+                + status + ", actual=" + lastStatus + ", body=" + lastBody);
     }
 
     @那么("库存已 Confirm")
