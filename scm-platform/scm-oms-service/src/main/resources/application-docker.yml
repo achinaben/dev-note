@@ -6,4 +6,5 @@ erp:
   base-url: http://scm-erp:8084
 scm:
   inventory:
+    provider: WMS
     wms-base-url: http://scm-wms:8082

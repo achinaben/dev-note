@@ -19,6 +19,7 @@ class EdgeKafkaStackConfigTest {
         String startScript = read(root, "scripts/start-edge-kafka.sh");
         String stopScript = read(root, "scripts/stop-edge-kafka.sh");
         String runScript = read(root, "scripts/run-e2e-edge-kafka.sh");
+        String omsDockerConfig = read(root, "scm-oms-service/src/main/resources/application-docker.yml");
         String workflow = read(root, ".github/workflows/scm-ci.yml");
         String rootWorkflow = read(root.getParent(), ".github/workflows/scm-platform-edge-kafka.yml");
         String kafkaOverlay = read(root, "docker-compose.kafka-overlay.yml");
@@ -46,6 +47,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(startScript.contains("SCM_COMPOSE_SKIP_BUILD"));
         assertTrue(startScript.contains("--no-build"));
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
+        assertOmsDockerUsesWmsInventory(omsDockerConfig);
         assertKafkaHasInternalAndExternalListeners(compose);
         assertEdgeStackAcceptsHostIssuedKeycloakTokens(edgeCompose);
         assertKeycloakRealmUsesClientRoles(keycloakRealm);
@@ -85,6 +87,11 @@ class EdgeKafkaStackConfigTest {
 
     private static void assertKafkaOverlayDoesNotUseEmptyProfiles(String kafkaOverlay) {
         assertFalse(kafkaOverlay.contains("profiles: []"));
+    }
+
+    private static void assertOmsDockerUsesWmsInventory(String omsDockerConfig) {
+        assertTrue(omsDockerConfig.contains("provider: WMS"));
+        assertTrue(omsDockerConfig.contains("wms-base-url: http://scm-wms:8082"));
     }
 
     private static void assertEdgeStackAcceptsHostIssuedKeycloakTokens(String edgeCompose) {
