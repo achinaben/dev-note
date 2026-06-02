@@ -761,21 +761,32 @@ public class E2EStepDefinitions {
         var ctx = ScmScenarioContext.get();
         ctx.packageNo = "P" + ctx.orderNo + "-" + index;
         String outboundNo = null;
-        for (int i = 0; i < 30; i++) {
+        int lastLookupStatus = 0;
+        String lastLookupBody = "";
+        for (int i = 0; i < 60; i++) {
             int status = given().baseUri(WMS).get("/wms/v1/outbound/by-package/{pkg}", ctx.packageNo)
                     .then().extract().statusCode();
+            lastLookupStatus = status;
             if (status == 200) {
-                outboundNo = given().baseUri(WMS).get("/wms/v1/outbound/by-package/{pkg}", ctx.packageNo)
-                        .then().statusCode(200)
-                        .extract().path("outbound_no");
+                Response lookup = given().baseUri(WMS).get("/wms/v1/outbound/by-package/{pkg}", ctx.packageNo);
+                lastLookupBody = lookup.asString();
+                outboundNo = lookup.then().statusCode(200).extract().path("outbound_no");
                 break;
             }
-            Thread.sleep(300);
+            Thread.sleep(500);
         }
-        given().baseUri(WMS).contentType(ContentType.JSON)
+        if (outboundNo == null || outboundNo.isBlank()) {
+            throw new AssertionError("WMS outbound not found for package=" + ctx.packageNo
+                    + ", lastStatus=" + lastLookupStatus + ", lastBody=" + lastLookupBody);
+        }
+        Response shipResponse = given().baseUri(WMS).contentType(ContentType.JSON)
                 .body(shipBodyWithWaybill(ctx))
-                .post("/wms/v1/outbound/{ob}/ship", outboundNo)
-                .then().statusCode(200);
+                .post("/wms/v1/outbound/{ob}/ship", outboundNo);
+        if (shipResponse.statusCode() != 200) {
+            throw new AssertionError("WMS ship failed for package=" + ctx.packageNo
+                    + ", outboundNo=" + outboundNo + ", status=" + shipResponse.statusCode()
+                    + ", body=" + shipResponse.asString());
+        }
         ctx.bizKey = "WMS_OUTBOUND_SHIPPED+" + outboundNo;
     }
 
