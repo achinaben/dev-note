@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 
@@ -41,6 +42,17 @@ class MemoryEventBusTest {
         ));
 
         assertEquals(1, count.get());
+
+    }
+
+    @Test
+
+    void kafkaAutoConfigurationRegistersListener() {
+
+        KafkaScmEventListener listener = new ScmEventAutoConfiguration()
+                .kafkaScmEventListener(new EventDispatcher());
+
+        assertNotNull(listener);
 
     }
 

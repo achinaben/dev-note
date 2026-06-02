@@ -135,6 +135,18 @@ public class ScmEventAutoConfiguration {
 
     @ConditionalOnProperty(name = "scm.event.transport", havingValue = "kafka")
 
+    KafkaScmEventListener kafkaScmEventListener(EventDispatcher dispatcher) {
+
+        return new KafkaScmEventListener(dispatcher);
+
+    }
+
+
+
+    @Bean
+
+    @ConditionalOnProperty(name = "scm.event.transport", havingValue = "kafka")
+
     ScmEventPublisher kafkaScmEventPublisher(KafkaTemplate<String, String> kafkaTemplate) {
 
         return new KafkaScmEventPublisher(kafkaTemplate);
