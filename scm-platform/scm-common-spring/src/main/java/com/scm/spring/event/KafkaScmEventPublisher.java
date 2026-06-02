@@ -8,6 +8,8 @@ import com.scm.common.event.EventJson;
 
 import org.springframework.kafka.core.KafkaTemplate;
 
+import java.util.concurrent.TimeUnit;
+
 
 
 public class KafkaScmEventPublisher implements ScmEventPublisher {
@@ -34,7 +36,7 @@ public class KafkaScmEventPublisher implements ScmEventPublisher {
 
             String json = EventJson.mapper().writeValueAsString(envelope);
 
-            kafkaTemplate.send(topic, envelope.bizKey(), json);
+            kafkaTemplate.send(topic, envelope.bizKey(), json).get(10, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
