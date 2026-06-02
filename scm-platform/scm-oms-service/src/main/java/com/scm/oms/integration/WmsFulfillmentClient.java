@@ -24,7 +24,7 @@ public class WmsFulfillmentClient implements WmsGateway {
     @Override
     @SuppressWarnings("unchecked")
     public String createOutbound(String packageNo, String orderNo) {
-        Optional<String> existing = findOutboundByOrder(orderNo);
+        Optional<String> existing = findOutboundByPackage(packageNo);
         if (existing.isPresent()) {
             return existing.get();
         }
@@ -47,6 +47,24 @@ public class WmsFulfillmentClient implements WmsGateway {
             }
             throw ex;
         }
+    }
+
+    private Optional<String> findOutboundByPackage(String packageNo) {
+        try {
+            var resp = rest.getForEntity(
+                    wmsBaseUrl + "/wms/v1/outbound/by-package/{packageNo}",
+                    Map.class,
+                    packageNo);
+            if (resp.getBody() != null && resp.getBody().get("outbound_no") != null) {
+                return Optional.of((String) resp.getBody().get("outbound_no"));
+            }
+        } catch (HttpStatusCodeException ex) {
+            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return Optional.empty();
+            }
+            throw ex;
+        }
+        return Optional.empty();
     }
 
     @Override
