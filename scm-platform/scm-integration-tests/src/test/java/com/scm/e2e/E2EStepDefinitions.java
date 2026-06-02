@@ -8,6 +8,7 @@ import io.cucumber.java.zh_cn.当;
 import io.cucumber.java.zh_cn.那么;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import java.net.Socket;
@@ -79,8 +80,12 @@ public class E2EStepDefinitions {
         if (isGatewayBase(omsBase)) {
             req = req.header("X-Api-Key", "e2e-gateway-key");
         }
-        ctx.orderNo = req.post("/api/v1/orders")
-                .then().statusCode(201)
+        Response response = req.post("/api/v1/orders");
+        if (response.statusCode() != 201) {
+            throw new AssertionError("submit order failed: status="
+                    + response.statusCode() + ", body=" + response.asString());
+        }
+        ctx.orderNo = response.then()
                 .extract().path("data.orders[0].order_no");
     }
 
