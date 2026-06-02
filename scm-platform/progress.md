@@ -8,7 +8,7 @@
 |----|-----|
 | 目标波次 | W37 |
 
-| 上次更新 | 2026-06-02 01:01 UTC |
+| 上次更新 | 2026-06-02 06:16 UTC |
 | 上次 mvn test | `mvn test` 通过 |
 | 阻塞项 | 无；edge + Kafka E2E-K05 compose CI 已通过 |
 
@@ -164,3 +164,11 @@
 - CI：根 workflow 增加 MySQL/Redis 启动重试与 E2E 失败 annotation 诊断；edge+kafka K05 默认验证 Kafka 业务链路，不强制 OMS JWT，JWT 网关仍由独立网关场景覆盖。
 - 测试：JDK 17 下 `mvn test` 全模块通过；GitHub Actions `e2e-edge-kafka-stack` 最新 run（提交 `30c612e`）通过，E2E-K05 已在 compose 栈跑通。
 - 下一动作：W37 已完成；下一轮可开启新波次，优先清理临时诊断输出或恢复更严格的 edge JWT+Kafka 联合场景。
+
+### 2026-06-02 Cloud Automation Run（清理 E2E-K05 诊断输出）
+
+- 已在仓库根同步 `cursor/scm-wave`，远程已是最新；启动时 target 生成物阻塞 rebase，已确认仅为构建产物并清理后继续。
+- 清理：移除 E2E-K05 成功跑通后遗留的失败报表 annotation 步骤，保留服务启动阶段的容器状态与日志输出，避免 CI 正常失败定位能力下降。
+- 契约：配置守护测试改为禁止临时报表 annotation 回流，并继续锁定 edge + Kafka 启动链路、端口等待与清理步骤。
+- 测试：JDK 17 下 `mvn -pl scm-contract-check test` 通过；`mvn test` 全模块通过。
+- 下一动作：W37 已完成；下一轮若未开启新波次，可继续恢复更严格的 edge JWT + Kafka 联合场景。
