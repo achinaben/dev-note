@@ -177,9 +177,8 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("Start JWT gateway service"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-gateway-jwt"));
         assertTrue(rootWorkflow.contains("bash scripts/run-e2e-edge-kafka.sh"));
-        assertTrue(rootWorkflow.contains("Report E2E-K05 diagnostics"));
-        assertTrue(rootWorkflow.contains("surefire-reports"));
-        assertTrue(rootWorkflow.contains("::error file="));
+        assertFalse(rootWorkflow.contains("Report E2E-K05 diagnostics"));
+        assertFalse(rootWorkflow.contains("::error file="));
         assertTrue(rootWorkflow.contains("bash scripts/stop-edge-kafka.sh"));
         assertTrue(rootWorkflow.contains("/dev/tcp/127.0.0.1/$p"));
         assertFalse(rootWorkflow.contains("continue-on-error: true"));
