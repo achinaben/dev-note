@@ -34,13 +34,15 @@ class EdgeKafkaStackConfigTest {
         String wmsApplication = read(root, "scm-wms-service/src/main/java/com/scm/wms/WmsApplication.java");
         String tmsApplication = read(root, "scm-tms-service/src/main/java/com/scm/tms/TmsApplication.java");
 
-        assertTrue(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
+        assertTrue(edgeKafkaCompose.contains("jdbc,docker,kafka,docker-kafka"));
+        assertFalse(edgeKafkaCompose.contains("jwt,jwt-jwks,kafka,docker-kafka"));
         assertTrue(edgeKafkaCompose.contains("profiles: [\"legacy-gateway\"]"));
         assertUsesEdgeKafkaComposeChain(startScript);
         assertUsesEdgeKafkaComposeChain(stopScript);
         assertTrue(runScript.contains("-Pe2e-kafka"));
         assertTrue(runScript.contains("@E2E-K05"));
         assertTrue(runScript.contains("SCM_E2E_OMS_AUTH"));
+        assertTrue(runScript.contains("SCM_E2E_OMS_AUTH:-none"));
         assertTrue(startScript.contains("SCM_COMPOSE_SKIP_BUILD"));
         assertTrue(startScript.contains("--no-build"));
         assertKafkaOverlayDoesNotUseEmptyProfiles(kafkaOverlay);
@@ -142,10 +144,7 @@ class EdgeKafkaStackConfigTest {
         assertTrue(rootWorkflow.contains("Wait for Kafka port"));
         assertTrue(rootWorkflow.contains("Start Keycloak infrastructure"));
         assertTrue(rootWorkflow.contains("up -d keycloak"));
-        assertTrue(rootWorkflow.contains("Wait for Keycloak token endpoint"));
-        assertTrue(rootWorkflow.contains("/realms/scm/protocol/openid-connect/token"));
-        assertTrue(rootWorkflow.contains("grant_type=password&client_id=scm-gateway"));
-        assertTrue(rootWorkflow.contains("scope=openid"));
+        assertFalse(rootWorkflow.contains("Wait for Keycloak token endpoint"));
         assertFalse(rootWorkflow.contains("scope=openid%20oms.write"));
         assertTrue(rootWorkflow.contains("Start TMS service"));
         assertTrue(rootWorkflow.contains("up -d --no-build scm-tms"));
